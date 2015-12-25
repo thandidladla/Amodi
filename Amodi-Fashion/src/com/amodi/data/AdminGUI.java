@@ -19,6 +19,7 @@ import java.util.Arrays;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 public class AdminGUI extends JFrame {
 
@@ -60,6 +61,12 @@ public class AdminGUI extends JFrame {
 		
 		JMenu mnTools = new JMenu("Tools");
 		menuBar.add(mnTools);
+		
+		JMenuItem mntmRemove = new JMenuItem("Remove");
+		mnTools.add(mntmRemove);
+		
+		JMenuItem mntmAdd = new JMenuItem("Add...");
+		mnTools.add(mntmAdd);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
