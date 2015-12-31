@@ -16,6 +16,7 @@ public class Controller {
 	private ResultSet resultSet = null;
 	private String url, username, password;
 
+	//String constants with information of the relations <Name of Relation>,<attribute1>,<attribute2>...
 	public static final String[] KLEIDUNGSART = { "Kleidungsart", "KleidungsID", "Kleidungsart", "Form" };
 	public static final String[] GESCHAEFT = { "Geschaeft", "GeschaeftsID", "Name", "Link", "Straße", "PLZ", "Ort" };
 	public static final String[] USER = { "User", "Username", "Password", "E-Mail", "PLZ", "Ort" };
@@ -27,7 +28,15 @@ public class Controller {
 	public Controller() {
 		connect();
 	}
-
+	
+	/**
+	 * Commits new changes made in a relation.
+	 * @param primkey_value - The primary key of the involved dataset
+	 * @param changed_value - The attribute of the dataset, which changed
+	 * @param changed_index - The index of the attribute which changed
+	 * @param relation - The relation of the dataset
+	 * @return true, if the change was commited successfully
+	 */
 	public boolean edit(Object primkey_value, Object changed_value, int changed_index, String[] relation) {
 		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
@@ -47,7 +56,13 @@ public class Controller {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Checks if the given row is a dataset in the relation.
+	 * @param row - The dataset to check
+	 * @param relation - The relation of the dataset
+	 * @return
+	 */
 	public boolean exists(Object[] row, String[] relation) {
 		String query = "SELECT * FROM ";
 		query += relation[0] + " WHERE " + relation[1] + "=" + "'" + (String) row[0] + "';";
@@ -59,13 +74,25 @@ public class Controller {
 		return resultSet == null;
 
 	}
-
+	
+	/**
+	 * Loads all datasets of the relation.
+	 * @param relation - Relation to load
+	 * @return Object[][] with relation-data if successful
+	 * @return null if loading fails
+	 */
 	public Object[][] loadData(String[] relation) {
 		String query = "SELECT * FROM " + relation[0];
 		return executeQuery(query);
 
 	}
-
+	
+	/**
+	 * Adds a dataset to the given relation.
+	 * @param row - Dataset to add
+	 * @param relation - Involved relation.
+	 * @return true if adding was successful
+	 */
 	public boolean add(Object[] row, String[] relation) {
 		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
@@ -100,7 +127,13 @@ public class Controller {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Removes given dataset from relation.
+	 * @param row - dataset to remove
+	 * @param relation - Involved relation
+	 * @return true if removing was successful
+	 */
 	public boolean remove(Vector<Object> row, String[] relation) {
 		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
@@ -121,7 +154,13 @@ public class Controller {
 //	public Object[][] search() {
 //
 //	}
-
+	
+	/**
+	 * Wrapper of execute Query to get a Object[][] as result.
+	 * @param sql - Query to execute
+	 * @return Object[][] with results
+	 * @return null if query fails or no data was founded
+	 */
 	public Object[][] executeQuery(String sql) {
 		try {
 			resultSet = statement.executeQuery(sql);
@@ -150,6 +189,10 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Connects with the database
+	 * @return true if connection was established
+	 */
 	public boolean connect(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
