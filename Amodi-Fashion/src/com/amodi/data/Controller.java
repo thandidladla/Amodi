@@ -29,6 +29,8 @@ public class Controller {
 		connect();
 	}
 	
+	
+	
 	/**
 	 * Commits new changes made in a relation.
 	 * @param primkey_value - The primary key of the involved dataset
@@ -150,10 +152,36 @@ public class Controller {
 			return false;
 		}
 	}
-
-//	public Object[][] search() {
-//
-//	}
+	
+	/**
+	 * Search method for Strings gives the row(s) where the searched String is in as result.
+	 * @param searchedObj - String that is searched
+	 * @param relation - The relation where the object is searched
+	 * @return null if nothing found else it gives all rows where the given String is in.
+	 */
+	
+	public Object[][] search(String searchedObj, String[] relation) {
+		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
+				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
+			int i = 0;
+			boolean end = false;
+			String query = "";
+			int columns = relation.length;
+				do{
+					if(i < columns)
+					{
+						query = "SELECT * FROM " + relation[0] + " WHERE " 
+								+ relation[i] + "=" + "'" + searchedObj + "'" + ";";
+						i++;
+					}
+					else
+						end=true;
+			}while(executeQuery(query)==null && end==false);
+				return executeQuery(query);
+		} else {
+			return null;
+		}
+	}
 	
 	/**
 	 * Wrapper of execute Query to get a Object[][] as result.
