@@ -87,8 +87,13 @@ public class AdminGUI extends JFrame {
 
 		tblArtikel = new JTable();
 		tblArtikel.setModel(new DefaultTableModel(ctrl.loadData(Controller.ARTIKEL),
-				Arrays.copyOfRange(Controller.ARTIKEL, 1, Controller.ARTIKEL.length)));
+				Arrays.copyOfRange(Controller.ARTIKEL, 1, Controller.ARTIKEL.length)){
+			public boolean isCellEditable(int row, int column)
+			{	if(column = 0){return false;}
+				else{return true;}
+			}});
 		scrollPaneArtikel.setViewportView(tblArtikel);
+
 
 		JPanel panelKleidungsart = new JPanel();
 		tabbedPane.addTab("Kleidungsart",
@@ -102,8 +107,12 @@ public class AdminGUI extends JFrame {
 		panelKleidungsart.add(scrollPaneKleidungsart);
 
 		tblKleidungsart = new JTable();
-		tblKleidungsart.setModel(new DefaultTableModel(ctrl.loadData(Controller.KLEIDUNGSART),
-				Arrays.copyOfRange(Controller.KLEIDUNGSART, 1, Controller.KLEIDUNGSART.length)));
+		tblKleidungsart.setModel(new DefaultTableModel(ctrl.loadData(Controller.KLEIDUNGSART), 
+				Arrays.copyOfRange(Controller.KLEIDUNGSART, 1, Controller.KLEIDUNGSART.length)){
+			public boolean isCellEditable(int row, int column)
+			{	if(column = 0){return false;}
+				else{return true;}
+			}});
 		scrollPaneKleidungsart.setViewportView(tblKleidungsart);
 
 		JPanel panelAngebot = new JPanel();
@@ -118,7 +127,11 @@ public class AdminGUI extends JFrame {
 
 		tblAngebot = new JTable();
 		tblAngebot.setModel(new DefaultTableModel(ctrl.loadData(Controller.ANGEBOT),
-				Arrays.copyOfRange(Controller.ANGEBOT, 1, Controller.ANGEBOT.length)));
+				Arrays.copyOfRange(Controller.ANGEBOT, 1, Controller.ANGEBOT.length)){
+			public boolean isCellEditable(int row, int column)
+			{	if(column = 0){return false;}
+				else{return true;}
+			}});
 		tblAngebot.getModel().addTableModelListener(new TableModelListener() {
 
 			@Override
@@ -143,7 +156,11 @@ public class AdminGUI extends JFrame {
 
 		tblGeschaeft = new JTable();
 		tblGeschaeft.setModel(new DefaultTableModel(ctrl.loadData(Controller.GESCHAEFT),
-				Arrays.copyOfRange(Controller.GESCHAEFT, 1, Controller.GESCHAEFT.length)));
+				Arrays.copyOfRange(Controller.GESCHAEFT, 1, Controller.GESCHAEFT.length)){
+			public boolean isCellEditable(int row, int column)
+			{	if(column = 0){return false;}
+				else{return true;}
+			}});
 		scrollPaneGeschaeft.setViewportView(tblGeschaeft);
 
 		JPanel panelUser = new JPanel();
@@ -158,7 +175,11 @@ public class AdminGUI extends JFrame {
 
 		tblUser = new JTable();
 		tblUser.setModel(new DefaultTableModel(ctrl.loadData(Controller.USER),
-				Arrays.copyOfRange(Controller.USER, 1, Controller.USER.length)));
+				Arrays.copyOfRange(Controller.USER, 1, Controller.USER.length)){
+			public boolean isCellEditable(int row, int column)
+			{	if(column = 0){return false;}
+				else{return true;}
+			}});
 		scrollPaneUser.setViewportView(tblUser);
 
 		JPanel panel = new JPanel();
