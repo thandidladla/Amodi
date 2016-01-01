@@ -17,13 +17,13 @@ public class Controller {
 	private String url, username, password;
 
 	//String constants with information of the relations <Name of Relation>,<attribute1>,<attribute2>...
-	public static final String[] KLEIDUNGSART = { "Kleidungsart", "KleidungsID", "Kleidungsart", "Form" };
-	public static final String[] GESCHAEFT = { "Geschaeft", "GeschaeftsID", "Name", "Link", "Straße", "PLZ", "Ort" };
-	public static final String[] USER = { "User", "Username", "Password", "E-Mail", "PLZ", "Ort" };
+	//public static final String[] KLEIDUNGSART = { "Kleidungsart", "KleidungsID", "Kleidungsart", "Form" };
+	public static final String[] GESCHAEFT = { "Geschaeft", "Name", "Link", "Strasse", "PLZ", "Ort" };
+	public static final String[] USER = { "User", "Username", "Password", "Mail", "PLZ", "Ort" };
 	public static final String[] ARTIKEL = { "Artikel", "ArtikelID", "Geschlecht", "Marke", "Farbe", "Tags", "Stil", "Bilder",
-			"KleidungsID" };
+			"Kleidungsart","Kleidungsform"};
 	public static final String[] ANGEBOT = { "Angebot", "AngebotID", "Startdatum", "Ablaufdatum", "Status", "Preis",
-			"Angebotsart", "ArtikelID", "GeschaeftsID" };
+			"Angebotsart", "ArtikelID", "Geschaeft" };
 
 	public Controller() {
 		connect();
@@ -40,7 +40,7 @@ public class Controller {
 	 * @return true, if the change was commited successfully
 	 */
 	public boolean edit(Object primkey_value, Object changed_value, int changed_index, String[] relation) {
-		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
+		if (relation.equals(ARTIKEL)  || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
 			String query = "";
 
@@ -96,17 +96,17 @@ public class Controller {
 	 * @return true if adding was successful
 	 */
 	public boolean add(Object[] row, String[] relation) {
-		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
+		if (relation.equals(ARTIKEL)  || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
 			String query1 = "", query2 = "";
 			if (!exists(row, relation)) {
 				for (int i = 0; i < relation.length; i++) {
 					if (i == 0) {
-						query1 = "INSERT INTO" + relation[i] + " (";
+						query1 = "INSERT INTO " + relation[i] + " (";
 						query2 = "VALUES (";
-					} else if (i != 1) {
+					} else if (i != 1 || (i == 1 && (relation == GESCHAEFT || relation == USER))) {
 						query1 += relation[i];
-						query2 += "'" + (String) row[i - 1] + "'";
+						query2 += "'" + (String) row[i -1] + "'";
 						if (i != relation.length - 1) {
 							query1 += ",";
 							query2 += ",";
@@ -117,9 +117,10 @@ public class Controller {
 					}
 				}
 				try {
-					statement.executeQuery(query1 + query2);
+					statement.execute(query1 + query2);
 					return true;
 				} catch (SQLException e) {
+					System.out.println(e);
 					return false;
 				}
 			} else {
@@ -136,15 +137,16 @@ public class Controller {
 	 * @param relation - Involved relation
 	 * @return true if removing was successful
 	 */
-	public boolean remove(Vector<Object> row, String[] relation) {
-		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
+	public boolean remove(Object[] row, String[] relation) {
+		if (relation.equals(ARTIKEL) || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
 			String query = "DELETE FROM ";
-			query += relation[0] + " WHERE " + relation[1] + "=" + "'" + (String) row.get(0) + "'" + ";";
+			query += relation[0] + " WHERE " + relation[1] + "=" + "'" +  row[0] + "'" + ";";
 			try {
-				statement.executeQuery(query);
+				statement.execute(query);
 				return true;
 			} catch (SQLException e) {
+				System.out.print(e);
 				return false;
 			}
 
@@ -161,7 +163,7 @@ public class Controller {
 	 */
 	
 	public Object[][] search(String searchedObj, String[] relation) {
-		if (relation.equals(ARTIKEL) || relation.equals(KLEIDUNGSART) || relation.equals(GESCHAEFT)
+		if (relation.equals(ARTIKEL) || relation.equals(GESCHAEFT)
 				|| relation.equals(ANGEBOT) || relation.equals(USER)) {
 			int i = 0;
 			boolean end = false;
@@ -205,7 +207,7 @@ public class Controller {
 				result = new Object[rows][columns];
 
 				for (int i = 0; resultSet.next(); i++) {
-					for (int j = 1; j < columns; j++) {
+					for (int j = 1; j <= columns; j++) {
 						result[i][j-1] = resultSet.getObject(j);
 					}
 				}
@@ -224,7 +226,7 @@ public class Controller {
 	public boolean connect(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/a9691386_Amodi", "mithras", "Pas413839");
+			connect = DriverManager.getConnection("jdbc:mysql://sql4.freesqldatabase.com/sql4101525", "sql4101525", "UWI2EssbM6");
 			statement = connect.createStatement();
 			System.out.println("established");
 			return true;
