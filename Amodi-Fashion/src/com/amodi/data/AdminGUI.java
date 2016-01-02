@@ -45,26 +45,10 @@ public class AdminGUI extends JFrame {
 	private JTable[] tables = new JTable[4];
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AdminGUI frame = new AdminGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public AdminGUI() {
-		ctrl = new Controller();
+	public AdminGUI(Controller ctrl) {
+		this.ctrl = ctrl;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 898, 509);
@@ -264,6 +248,7 @@ public class AdminGUI extends JFrame {
 
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
+		
 	}
 
 	protected void refreshCurrentTable() {
@@ -290,7 +275,7 @@ public class AdminGUI extends JFrame {
 			JTextField txtstil = new JTextField();
 			JTextField txtart = new JTextField();
 			JTextField txtform = new JTextField();
-			String[] cb_items = { "männlich", "weiblich" };
+			String[] cb_items = { "männlich", "weiblich","unisex" };
 			JComboBox<String> cbgeschlecht = new JComboBox<String>(cb_items);
 			inputs = new JComponent[] { new JLabel("Geschlecht:"), cbgeschlecht, new JLabel("Marke:"), txtmarke,
 					new JLabel("Farbe:"), txtfarbe, new JLabel("Tags:"), txttags, new JLabel("Stil:"), txtstil,
@@ -327,12 +312,14 @@ public class AdminGUI extends JFrame {
 			JTextField txtemail = new JTextField();
 			JTextField txtuplz = new JTextField();
 			JTextField txtuort = new JTextField();
+			String[] cb2_items = { "user", "admin" };
+			JComboBox<String> cbrang = new JComboBox<String>(cb2_items);
 			inputs = new JComponent[] { new JLabel("Username:"), txtuname, new JLabel("Password:"), pw,
-					new JLabel("Email:"), txtemail, new JLabel("Postleihzahl:"), txtuplz, new JLabel("Ort:"), txtuort };
+					new JLabel("Email:"), txtemail, new JLabel("Postleihzahl:"), txtuplz, new JLabel("Ort:"), txtuort,new JLabel("Rang:"),cbrang };
 			if (JOptionPane.showConfirmDialog(this, inputs, "New 'User'",
 					JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
 				Object[] result = { txtuname.getText(), new String(pw.getPassword()), txtemail.getText(),
-						txtuplz.getText(), txtuort.getText() };
+						txtuplz.getText(), txtuort.getText(),(String)cbrang.getSelectedItem() };
 				return result;
 			} else {
 				return null;
