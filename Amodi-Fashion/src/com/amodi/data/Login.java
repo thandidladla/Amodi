@@ -56,8 +56,6 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		ctrl = new Controller();
-		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Login.class.getResource("/com/amodi/res/login_icon.png")));
 		setTitle("Login");
 		setOpacity(1.0f);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
