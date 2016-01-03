@@ -1,6 +1,5 @@
 package com.amodi.data;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,9 +8,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
-import javax.swing.SwingConstants;
 import javax.swing.JTextField;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,7 +16,6 @@ import javax.swing.JPasswordField;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JButton;
-import javax.swing.DropMode;
 import javax.swing.border.BevelBorder;
 
 public class Login extends JFrame {
@@ -104,6 +100,7 @@ public class Login extends JFrame {
 		btnLogin.setForeground(new Color(0, 0, 0));
 		btnLogin.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
 		btnLogin.setBounds(175, 216, 100, 28);
+		this.getRootPane().setDefaultButton(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			
 			@Override

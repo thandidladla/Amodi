@@ -2,17 +2,14 @@ package com.amodi.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSetMetaData;
-import java.util.Vector;
 
 public class Controller {
 	private Connection connect = null;
 	private Statement statement = null;
-	private PreparedStatement prep_statement = null;
 	private ResultSet resultSet = null;
 	private String url, username, password;
 	boolean connected;
@@ -21,15 +18,17 @@ public class Controller {
 	// Relation>,<attribute1>,<attribute2>...
 	// public static final String[] KLEIDUNGSART = { "Kleidungsart",
 	// "KleidungsID", "Kleidungsart", "Form" };
-	public static final String[] GESCHAEFT = { "Geschaeft", "Name", "Link", "Strasse", "PLZ", "Ort" };
-	public static final String[] USER = { "User", "Username", "Password", "Mail", "PLZ", "Ort", "Rang" };
-	public static final String[] ARTIKEL = { "Artikel", "ArtikelID", "Geschlecht", "Marke", "Farbe", "Tags", "Stil",
-			"Bilder", "Kleidungsart", "Kleidungsform" };
-	public static final String[] ANGEBOT = { "Angebot", "AngebotID", "Startdatum", "Ablaufdatum", "Status", "Preis",
-			"Angebotsart", "ArtikelID", "Geschaeft" };
+	public final String[] GESCHAEFT;
+	public final String[] USER;
+	public final String[] ARTIKEL;
+	public final String[] ANGEBOT;
 
 	public Controller() {
 		connect();
+		GESCHAEFT = getRelation("Geschaeft");
+		USER = getRelation("User");
+		ARTIKEL = getRelation("Artikel");
+		ANGEBOT = getRelation("Angebot");
 	}
 
 	/**
@@ -96,8 +95,11 @@ public class Controller {
 	 */
 	public Object[][] loadData(String[] relation) {
 		String query = "SELECT * FROM " + relation[0];
-		return executeQuery(query);
-
+		try {
+			return executeQuery(query);
+		} catch (SQLException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -184,26 +186,26 @@ public class Controller {
 	 *         String is in.
 	 */
 
-	public Object[][] search(String searchedObj, String[] relation) {
-		if (relation.equals(ARTIKEL) || relation.equals(GESCHAEFT) || relation.equals(ANGEBOT)
-				|| relation.equals(USER)) {
-			int i = 0;
-			boolean end = false;
-			String query = "";
-			int columns = relation.length;
-			do {
-				if (i < columns) {
-					query = "SELECT * FROM " + relation[0] + " WHERE " + relation[i] + "=" + "'" + searchedObj + "'"
-							+ ";";
-					i++;
-				} else
-					end = true;
-			} while (executeQuery(query) == null && end == false);
-			return executeQuery(query);
-		} else {
-			return null;
-		}
-	}
+//	public Object[][] search(String searchedObj, String[] relation) {
+//		if (relation.equals(ARTIKEL) || relation.equals(GESCHAEFT) || relation.equals(ANGEBOT)
+//				|| relation.equals(USER)) {
+//			int i = 0;
+//			boolean end = false;
+//			String query = "";
+//			int columns = relation.length;
+//			do {
+//				if (i < columns) {
+//					query = "SELECT * FROM " + relation[0] + " WHERE " + relation[i] + "=" + "'" + searchedObj + "'"
+//							+ ";";
+//					i++;
+//				} else
+//					end = true;
+//			} while (executeQuery(query) == null && end == false);
+//			return executeQuery(query);
+//		} else {
+//			return null;
+//		}
+//	}
 
 	/**
 	 * Wrapper of execute Query to get a Object[][] as result.
@@ -213,18 +215,16 @@ public class Controller {
 	 * @return Object[][] with results
 	 * @return null if query fails or no data was founded
 	 */
-	public Object[][] executeQuery(String sql) {
-		try {
+	public Object[][] executeQuery(String sql) throws SQLException {
 			resultSet = statement.executeQuery(sql);
 			if (resultSet == null) {
 				return null;
 			} else {
 				Object[][] result;
-				ResultSetMetaData meta = resultSet.getMetaData();
 
 				resultSet.last();
 				int rows = resultSet.getRow();
-				int columns = meta.getColumnCount();
+				int columns = getLastMetaData().getColumnCount();
 				resultSet.beforeFirst();
 				result = new Object[rows][columns];
 
@@ -235,10 +235,10 @@ public class Controller {
 				}
 				return result;
 			}
-		} catch (SQLException e) {
-			// Exception Handling
-			return null;
-		}
+	}
+
+	public boolean manipulate(String sql) throws SQLException {
+		return !statement.execute(sql);
 	}
 
 	/**
@@ -268,7 +268,7 @@ public class Controller {
 				resultSet = statement
 						.executeQuery("SELECT Password,Rang FROM User WHERE Username = '" + username + "';");
 				resultSet.next();
-				if (resultSet.getString(1).equals(password)) {
+				if (resultSet.getInt(1) == password.hashCode()) {
 					return resultSet.getString(2);
 				} else {
 					return null;
@@ -282,4 +282,43 @@ public class Controller {
 		}
 	}
 
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public Statement getStatement() {
+		return statement;
+	}
+
+	public ResultSet gesResultSet() {
+		return resultSet;
+	}
+	
+	public ResultSetMetaData getLastMetaData(){
+		try {
+			return resultSet.getMetaData();
+		} catch (SQLException e) {
+			return null;
+		}
+	}
+	
+	public ResultSet getLastResult(){
+		return resultSet;
+	}
+	
+	public String[] getRelation(String name){
+		try {
+			resultSet = statement.executeQuery("SELECT * FROM "+name);
+			ResultSetMetaData meta = resultSet.getMetaData();
+			String[] relation = new String[meta.getColumnCount()+1];
+			relation[0] = name;
+			for(int i = 1;i <= meta.getColumnCount();i++){
+				relation[i] = meta.getColumnName(i);
+			}
+			return relation;
+		} catch (SQLException e) {
+			return null;
+		}
+		
+	}
 }
