@@ -11,8 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -20,6 +22,7 @@ import javax.swing.JTabbedPane;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.JComponent;
 
 public class UserGUI extends JFrame {
 
@@ -31,6 +34,12 @@ public class UserGUI extends JFrame {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
+	private JTextField txtmarke;
+	private JTextField txtfarbe;
+	private JTextField txttags;
+	private JTextField txtstil;
+	private JTextField txtart;
+	private JTextField txtform;
 	/**
 	 * Launch the application.
 	 */
@@ -190,100 +199,155 @@ public class UserGUI extends JFrame {
 		gbc_btnNchste.gridx = 9;
 		gbc_btnNchste.gridy = 5;
 		panel_offers.add(btnNchste, gbc_btnNchste);
-		
-		JPanel panel_add = new JPanel();
-		tabbedPane.addTab("Angebot eintragen", null, panel_add, null);
-		GridBagLayout gbl_panel_add = new GridBagLayout();
-		gbl_panel_add.columnWidths = new int[]{0, 0, 0, 20, 0};
-		gbl_panel_add.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel_add.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_add.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panel_add.setLayout(gbl_panel_add);
-		
-		JLabel lblAngebot = new JLabel("Angebot");
-		GridBagConstraints gbc_lblAngebot = new GridBagConstraints();
-		gbc_lblAngebot.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot.gridx = 1;
-		gbc_lblAngebot.gridy = 1;
-		panel_add.add(lblAngebot, gbc_lblAngebot);
-		
-		txtAngebot = new JTextField();
-		GridBagConstraints gbc_txtAngebot = new GridBagConstraints();
-		gbc_txtAngebot.anchor = GridBagConstraints.WEST;
-		gbc_txtAngebot.insets = new Insets(0, 0, 5, 0);
-		gbc_txtAngebot.gridx = 3;
-		gbc_txtAngebot.gridy = 1;
-		panel_add.add(txtAngebot, gbc_txtAngebot);
-		txtAngebot.setColumns(10);
-		
-		JLabel lblArtikel = new JLabel("Artikel");
-		GridBagConstraints gbc_lblArtikel = new GridBagConstraints();
-		gbc_lblArtikel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblArtikel.gridx = 1;
-		gbc_lblArtikel.gridy = 3;
-		panel_add.add(lblArtikel, gbc_lblArtikel);
-		
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.anchor = GridBagConstraints.WEST;
-		gbc_textField.insets = new Insets(0, 0, 5, 0);
-		gbc_textField.gridx = 3;
-		gbc_textField.gridy = 3;
-		panel_add.add(textField, gbc_textField);
-		textField.setColumns(10);
-		
-		JLabel lblGltigBis = new JLabel("G\u00FCltig bis:");
-		GridBagConstraints gbc_lblGltigBis = new GridBagConstraints();
-		gbc_lblGltigBis.insets = new Insets(0, 0, 5, 5);
-		gbc_lblGltigBis.gridx = 1;
-		gbc_lblGltigBis.gridy = 5;
-		panel_add.add(lblGltigBis, gbc_lblGltigBis);
-		
-		textField_1 = new JTextField();
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.anchor = GridBagConstraints.WEST;
-		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_1.gridx = 3;
-		gbc_textField_1.gridy = 5;
-		panel_add.add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
-		
-		JLabel lblPreis = new JLabel("Preis");
-		GridBagConstraints gbc_lblPreis = new GridBagConstraints();
-		gbc_lblPreis.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPreis.gridx = 1;
-		gbc_lblPreis.gridy = 7;
-		panel_add.add(lblPreis, gbc_lblPreis);
-		
-		textField_2 = new JTextField();
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_2.gridx = 3;
-		gbc_textField_2.gridy = 7;
-		panel_add.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
-		
-		JLabel lblAngebotsart = new JLabel("Angebotsart");
-		GridBagConstraints gbc_lblAngebotsart = new GridBagConstraints();
-		gbc_lblAngebotsart.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebotsart.gridx = 1;
-		gbc_lblAngebotsart.gridy = 9;
-		panel_add.add(lblAngebotsart, gbc_lblAngebotsart);
-		
-		JLabel lblGeschaeft = new JLabel("Geschaeft");
-		GridBagConstraints gbc_lblGeschaeft = new GridBagConstraints();
-		gbc_lblGeschaeft.insets = new Insets(0, 0, 5, 5);
-		gbc_lblGeschaeft.gridx = 1;
-		gbc_lblGeschaeft.gridy = 11;
-		panel_add.add(lblGeschaeft, gbc_lblGeschaeft);
-		
-		JButton btnEintragen = new JButton("Eintragen");
-		GridBagConstraints gbc_btnEintragen = new GridBagConstraints();
-		gbc_btnEintragen.gridx = 3;
-		gbc_btnEintragen.gridy = 13;
-		panel_add.add(btnEintragen, gbc_btnEintragen);
-		
 		anzeigen(0);
+		
+		/*TAB ANGEBOT EINTRAGEN*/
+		JPanel panel_addArt = new JPanel();
+		tabbedPane.addTab("Artikel hinzuf\u00FCgen", null, panel_addArt, null);
+		GridBagLayout gbl_panel_addArt = new GridBagLayout();
+		gbl_panel_addArt.columnWidths = new int[]{30, 100, 30, 100, 30, 0, 0};
+		gbl_panel_addArt.rowHeights = new int[]{30, 0, 30, 0, 30, 0, 30, 0, 30, 0, 30, 0, 30, 0, 0};
+		gbl_panel_addArt.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_addArt.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panel_addArt.setLayout(gbl_panel_addArt);
+		
+		JLabel lblGeschlecht = new JLabel("Geschlecht:");
+		GridBagConstraints gbc_lblGeschlecht = new GridBagConstraints();
+		gbc_lblGeschlecht.insets = new Insets(0, 0, 5, 5);
+		gbc_lblGeschlecht.gridx = 1;
+		gbc_lblGeschlecht.gridy = 1;
+		panel_addArt.add(lblGeschlecht, gbc_lblGeschlecht);
+		
+		String[] cb_items = { "männlich", "weiblich", "unisex" };
+		JComboBox comboBox = new JComboBox(cb_items);
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 3;
+		gbc_comboBox.gridy = 1;
+		panel_addArt.add(comboBox, gbc_comboBox);
+		
+		JLabel lblMarke = new JLabel("Marke:");
+		GridBagConstraints gbc_lblMarke = new GridBagConstraints();
+		gbc_lblMarke.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMarke.gridx = 1;
+		gbc_lblMarke.gridy = 3;
+		panel_addArt.add(lblMarke, gbc_lblMarke);
+		
+		txtmarke = new JTextField();
+		GridBagConstraints gbc_txtmarke = new GridBagConstraints();
+		gbc_txtmarke.insets = new Insets(0, 0, 5, 5);
+		gbc_txtmarke.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtmarke.gridx = 3;
+		gbc_txtmarke.gridy = 3;
+		panel_addArt.add(txtmarke, gbc_txtmarke);
+		txtmarke.setColumns(10);
+		
+		JLabel lblFarbe = new JLabel("Farbe:");
+		GridBagConstraints gbc_lblFarbe = new GridBagConstraints();
+		gbc_lblFarbe.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFarbe.gridx = 1;
+		gbc_lblFarbe.gridy = 5;
+		panel_addArt.add(lblFarbe, gbc_lblFarbe);
+		
+		txtfarbe = new JTextField();
+		GridBagConstraints gbc_txtfarbe = new GridBagConstraints();
+		gbc_txtfarbe.insets = new Insets(0, 0, 5, 5);
+		gbc_txtfarbe.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtfarbe.gridx = 3;
+		gbc_txtfarbe.gridy = 5;
+		panel_addArt.add(txtfarbe, gbc_txtfarbe);
+		txtfarbe.setColumns(10);
+		
+		JLabel lblTags = new JLabel("Tags:");
+		GridBagConstraints gbc_lblTags = new GridBagConstraints();
+		gbc_lblTags.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTags.gridx = 1;
+		gbc_lblTags.gridy = 7;
+		panel_addArt.add(lblTags, gbc_lblTags);
+		
+		txttags = new JTextField();
+		GridBagConstraints gbc_txttags = new GridBagConstraints();
+		gbc_txttags.anchor = GridBagConstraints.NORTH;
+		gbc_txttags.insets = new Insets(0, 0, 5, 5);
+		gbc_txttags.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txttags.gridx = 3;
+		gbc_txttags.gridy = 7;
+		panel_addArt.add(txttags, gbc_txttags);
+		txttags.setColumns(10);
+		
+		JLabel lblStil = new JLabel("Stil:");
+		GridBagConstraints gbc_lblStil = new GridBagConstraints();
+		gbc_lblStil.insets = new Insets(0, 0, 5, 5);
+		gbc_lblStil.gridx = 1;
+		gbc_lblStil.gridy = 9;
+		panel_addArt.add(lblStil, gbc_lblStil);
+		
+		txtstil = new JTextField();
+		GridBagConstraints gbc_txtstil = new GridBagConstraints();
+		gbc_txtstil.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtstil.anchor = GridBagConstraints.NORTH;
+		gbc_txtstil.insets = new Insets(0, 0, 5, 5);
+		gbc_txtstil.gridx = 3;
+		gbc_txtstil.gridy = 9;
+		panel_addArt.add(txtstil, gbc_txtstil);
+		txtstil.setColumns(10);
+		
+		JLabel lblArt = new JLabel("Art:");
+		GridBagConstraints gbc_lblArt = new GridBagConstraints();
+		gbc_lblArt.insets = new Insets(0, 0, 5, 5);
+		gbc_lblArt.gridx = 1;
+		gbc_lblArt.gridy = 11;
+		panel_addArt.add(lblArt, gbc_lblArt);
+		
+		txtart = new JTextField();
+		GridBagConstraints gbc_txtart = new GridBagConstraints();
+		gbc_txtart.anchor = GridBagConstraints.NORTH;
+		gbc_txtart.insets = new Insets(0, 0, 5, 5);
+		gbc_txtart.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtart.gridx = 3;
+		gbc_txtart.gridy = 11;
+		panel_addArt.add(txtart, gbc_txtart);
+		txtart.setColumns(10);
+		
+		JLabel lblForm = new JLabel("Form:");
+		GridBagConstraints gbc_lblForm = new GridBagConstraints();
+		gbc_lblForm.insets = new Insets(0, 0, 0, 5);
+		gbc_lblForm.gridx = 1;
+		gbc_lblForm.gridy = 13;
+		panel_addArt.add(lblForm, gbc_lblForm);
+		
+		txtform = new JTextField();
+		GridBagConstraints gbc_txtform = new GridBagConstraints();
+		gbc_txtform.insets = new Insets(0, 0, 0, 5);
+		gbc_txtform.anchor = GridBagConstraints.NORTH;
+		gbc_txtform.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtform.gridx = 3;
+		gbc_txtform.gridy = 13;
+		panel_addArt.add(txtform, gbc_txtform);
+		txtform.setColumns(10);
+		
+		JButton btnArtikeladd = new JButton("hinzuf\u00FCgen");
+		btnArtikeladd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Object[] result = { null, (String) cbgeschlecht.getSelectedItem(), txtmarke.getText(),
+						txtfarbe.getText(), txttags.getText(), txtstil.getText(), null, txtart.getText(),
+						txtform.getText() };
+				ctrl.add(result, Controller.ANGEBOT);
+			}
+		});
+		GridBagConstraints gbc_btnArtikeladd = new GridBagConstraints();
+		gbc_btnArtikeladd.gridx = 5;
+		gbc_btnArtikeladd.gridy = 13;
+		panel_addArt.add(btnArtikeladd, gbc_btnArtikeladd);
+		
+		JPanel panel_addAng = new JPanel();
+		tabbedPane.addTab("Angebot eintragen", null, panel_addAng, null);
+
+
+		
+		
+		
 	}
 	public void anzeigen(int pSeite)
 	{
