@@ -22,8 +22,6 @@ public class SQL_Prompt {
 	private  final  JPanel contentPanel = new JPanel();
 	private  JTextArea textArea;
 	private  JRadioButton rdbtnQuery,rdbtnManipulation;
-	private  boolean isQuery;
-
 	/**
 	 * @wbp.parser.entryPoint
 	 */
@@ -66,7 +64,6 @@ public class SQL_Prompt {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							isQuery = false;
 							rdbtnQuery.setSelected(false);
 						}
 					});
@@ -81,7 +78,6 @@ public class SQL_Prompt {
 						
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							isQuery = true;
 							rdbtnManipulation.setSelected(false);
 						}
 					});
@@ -111,7 +107,7 @@ public class SQL_Prompt {
 	}
 	
 	public boolean isQuery(){
-		return isQuery;
+		return rdbtnQuery.isSelected();
 	}
 	
 	public void showErrorMessage(String msg,int optiontype){
