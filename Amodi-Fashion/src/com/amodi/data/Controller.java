@@ -1,4 +1,4 @@
-1package com.amodi.data;
+package com.amodi.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
