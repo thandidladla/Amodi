@@ -95,7 +95,7 @@ public class Login extends JFrame {
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/Price Tag USD-26.png")));
+		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/Angebot.png")));
 		btnLogin.setBackground(new Color(240, 230, 140));
 		btnLogin.setForeground(new Color(0, 0, 0));
 		btnLogin.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
@@ -121,7 +121,7 @@ public class Login extends JFrame {
 		btnRegister.setForeground(new Color(0, 0, 0));
 		btnRegister.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		btnRegister.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
-		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/Manager-26.png")));
+		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/User.png")));
 		btnRegister.setBackground(new Color(240, 230, 140));
 		btnRegister.setBounds(282, 216, 120, 28);
 		lblBackground.add(btnRegister);
