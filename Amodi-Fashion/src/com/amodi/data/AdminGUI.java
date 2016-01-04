@@ -44,6 +44,7 @@ public class AdminGUI extends JFrame {
 	private JTable tblGeschaeft;
 	private JTable tblUser;
 	private JTable tblQuery;
+	private AddDialog ad;
 
 	// Array mit zugehörigen Relationen für Tab-Index
 	private final Object[] RELATIONS = new Object[4];
@@ -58,7 +59,8 @@ public class AdminGUI extends JFrame {
 		this.RELATIONS[1] = ctrl.ANGEBOT;
 		this.RELATIONS[2] = ctrl.GESCHAEFT;
 		this.RELATIONS[3] = ctrl.USER;
-
+		
+		this.ad = new AddDialog();
 		setTitle("Amodi Admin");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 898, 509);
@@ -170,6 +172,7 @@ public class AdminGUI extends JFrame {
 
 			@Override
 			public void tableChanged(TableModelEvent e) {
+				if(ad.checkArtikel())
 				ctrl.edit(tblArtikel.getValueAt(e.getLastRow(), 0),
 						tblArtikel.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ARTIKEL);
 			}
@@ -277,9 +280,6 @@ public class AdminGUI extends JFrame {
 		});
 		scrollPaneUser.setViewportView(tblUser);
 
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.NORTH);
-
 	}
 
 	protected void actionPerformed_refresh() {
@@ -308,65 +308,13 @@ public class AdminGUI extends JFrame {
 	}
 
 	public Object[] showAddDialog(int tabIndex) {
-		JComponent[] inputs;
 		switch (tabIndex) {
 		case 0:
-			JTextField txtmarke = new JTextField();
-			JTextField txtfarbe = new JTextField();
-			JTextField txttags = new JTextField();
-			JTextField txtstil = new JTextField();
-			JTextField txtart = new JTextField();
-			JTextField txtform = new JTextField();
-			String[] cb_items = { "männlich", "weiblich", "unisex" };
-			JComboBox<String> cbgeschlecht = new JComboBox<String>(cb_items);
-			inputs = new JComponent[] { new JLabel("Geschlecht:"), cbgeschlecht, new JLabel("Marke:"), txtmarke,
-					new JLabel("Farbe:"), txtfarbe, new JLabel("Tags:"), txttags, new JLabel("Stil:"), txtstil,
-					new JLabel("Kleidungsart:"), txtart, new JLabel("Kleidungsform:"), txtform };
-			if (JOptionPane.showConfirmDialog(this, inputs, "New 'Artikel'",
-					JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-				Object[] result = { null, (String) cbgeschlecht.getSelectedItem(), txtmarke.getText(),
-						txtfarbe.getText(), txttags.getText(), txtstil.getText(), null, txtart.getText(),
-						txtform.getText() };
-				return result;
-			} else {
-				return null;
-			}
+			return ad.showArtikelDialog(this);
 		case 2:
-			JTextField txtname = new JTextField();
-			JTextField txtlink = new JTextField("http://");
-			JTextField txtstrasse = new JTextField();
-			JTextField txtplz = new JTextField();
-			JTextField txtort = new JTextField();
-			inputs = new JComponent[] { new JLabel("Geschaeftsname:"), txtname, new JLabel("Link:"), txtlink,
-					new JLabel("Straße:"), txtstrasse, new JLabel("Postleihzahl:"), txtplz, new JLabel("Ort:"),
-					txtort };
-			if (JOptionPane.showConfirmDialog(this, inputs, "New 'Geschaeft'",
-					JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-				Object[] result = { txtname.getText(), txtlink.getText(), txtstrasse.getText(), txtplz.getText(),
-						txtort.getText() };
-				return result;
-			} else {
-				return null;
-			}
+			return ad.showGeschaeftDialog(this);
 		case 3:
-			JTextField txtuname = new JTextField();
-			JPasswordField pw = new JPasswordField(12);
-			JTextField txtemail = new JTextField();
-			JTextField txtuplz = new JTextField();
-			JTextField txtuort = new JTextField();
-			String[] cb2_items = { "user", "admin" };
-			JComboBox<String> cbrang = new JComboBox<String>(cb2_items);
-			inputs = new JComponent[] { new JLabel("Username:"), txtuname, new JLabel("Password:"), pw,
-					new JLabel("Email:"), txtemail, new JLabel("Postleihzahl:"), txtuplz, new JLabel("Ort:"), txtuort,
-					new JLabel("Rang:"), cbrang };
-			if (JOptionPane.showConfirmDialog(this, inputs, "New 'User'", JOptionPane.OK_CANCEL_OPTION, 0,
-					new ImageIcon("Classpath: /com/amodi/res/Manager-26.png")) == JOptionPane.OK_OPTION) {
-				Object[] result = { txtuname.getText(), Integer.toString(new String(pw.getPassword()).hashCode()),
-						txtemail.getText(), txtuplz.getText(), txtuort.getText(), (String) cbrang.getSelectedItem() };
-				return result;
-			} else {
-				return null;
-			}
+			return ad.showUserDialog(this);
 		default:
 			return null;
 
@@ -431,9 +379,9 @@ public class AdminGUI extends JFrame {
 						prompt.showErrorMessage("Received empty Result Set.", JOptionPane.INFORMATION_MESSAGE);
 					} else {
 						JPanel panelQuery = new JPanel();
-						tabbedPane.addTab("Artikel        ",
-								new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Jumper Filled-25.png")),
-								panelQuery, null);
+						tabbedPane.addTab("Result        ",
+								new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/searching50.png")), panelQuery,
+								null);
 						panelQuery.setLayout(null);
 
 						JScrollPane scrollPaneQuery = new JScrollPane();
@@ -447,7 +395,6 @@ public class AdminGUI extends JFrame {
 								return false;
 							}
 						});
-						tabbedPane.addTab("Result", null, panelQuery, null);
 						scrollPaneQuery.setViewportView(tblQuery);
 						tabbedPane.setSelectedIndex(tabbedPane.getComponentCount() - 1);
 						this.toFront();

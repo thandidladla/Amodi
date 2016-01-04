@@ -53,8 +53,7 @@ public class Controller {
 
 			query += "WHERE " + relation[1] + "='" + primkey_value + "';";
 			try {
-				statement.execute(query);
-				return true;
+				return !statement.execute(query);
 			} catch (SQLException e) {
 				System.out.println(e);
 				return false;
