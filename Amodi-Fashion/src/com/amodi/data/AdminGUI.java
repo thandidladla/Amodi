@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
 import javax.swing.JMenuBar;
@@ -52,8 +54,12 @@ public class AdminGUI extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws UnsupportedLookAndFeelException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public AdminGUI(Controller ctrl) {
+	public AdminGUI(Controller ctrl) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		this.ctrl = ctrl;
 		this.RELATIONS[0] = ctrl.ARTIKEL;
 		this.RELATIONS[1] = ctrl.ANGEBOT;
@@ -64,7 +70,6 @@ public class AdminGUI extends JFrame {
 		setTitle("Amodi Admin");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 898, 509);
-
 		// MENU-------------------------------------
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

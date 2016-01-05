@@ -29,7 +29,7 @@ public class Login extends JFrame {
 	private JLabel lblAmodiFashion;
 	private JButton btnRegister;
 	private AdminGUI admin;
-	
+	private UserGUI user;
 
 	/**
 	 * Launch the application.
@@ -143,7 +143,17 @@ public class Login extends JFrame {
 					}
 				});
 			}else if(rang.equals("user")){
-				JOptionPane.showMessageDialog(null, "In work :-)");
+				this.dispose();
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							user = new UserGUI(ctrl);
+							user.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}else{
 				JOptionPane.showMessageDialog(null, "Failed. Check your credentials and your connection to the internet.", "Error", JOptionPane.ERROR_MESSAGE);
 				txtUsername.setText("");
