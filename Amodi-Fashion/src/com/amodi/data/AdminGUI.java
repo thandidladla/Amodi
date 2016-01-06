@@ -4,6 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -25,6 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
@@ -49,6 +55,8 @@ public class AdminGUI extends JFrame {
 	// Array mit zugehörigen Relationen für Tab-Index
 	private final String[][] RELATIONS = new String[4][];
 	private JTable[] tables = new JTable[4];
+	private JScrollPane scrollPaneArtikel;
+	private JScrollPane scrollPaneGeschaeft;
 
 	/**
 	 * Create the frame.
@@ -59,10 +67,22 @@ public class AdminGUI extends JFrame {
 		this.RELATIONS[1] = ctrl.ANGEBOT;
 		this.RELATIONS[2] = ctrl.GESCHAEFT;
 		this.RELATIONS[3] = ctrl.USER;
-		
+
 		this.ad = new AmodiDialog();
 		setTitle("Amodi Admin");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		WindowAdapter exitListener = new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
+						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == 0) {
+					ctrl.disconnect();
+					System.exit(0);
+				}
+			}
+		};
+		this.addWindowListener(exitListener);
 		setBounds(100, 100, 898, 509);
 
 		// MENU-------------------------------------
@@ -82,6 +102,7 @@ public class AdminGUI extends JFrame {
 					String[] relation = (String[]) RELATIONS[tabbedPane.getSelectedIndex()];
 					ctrl.add(data, relation);
 					refreshTable(tabbedPane.getSelectedIndex());
+
 				}
 
 			}
@@ -147,11 +168,11 @@ public class AdminGUI extends JFrame {
 		// TABS-------------------------------------------------------
 		// ARTIKEL
 		JPanel panelArtikel = new JPanel();
-		tabbedPane.addTab("Artikel        ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Artikel.png")), panelArtikel, null);
+		tabbedPane.addTab("Artikel        ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Artikel.png")),
+				panelArtikel, null);
 		panelArtikel.setLayout(null);
 
-		JScrollPane scrollPaneArtikel = new JScrollPane();
+		scrollPaneArtikel = new JScrollPane();
 		scrollPaneArtikel.setBounds(10, 11, 743, 427);
 		scrollPaneArtikel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelArtikel.add(scrollPaneArtikel);
@@ -172,10 +193,10 @@ public class AdminGUI extends JFrame {
 
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				if(ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[0][0])){
+				if (ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[0][0])) {
 					ctrl.edit(tblArtikel.getValueAt(e.getLastRow(), 0),
-						tblArtikel.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ARTIKEL);
-				}else{
+							tblArtikel.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ARTIKEL);
+				} else {
 					JOptionPane.showMessageDialog(tblArtikel.getRootPane(), "Invalid value!.");
 					refreshTable(0);
 				}
@@ -185,8 +206,8 @@ public class AdminGUI extends JFrame {
 
 		// ANGEBOT
 		JPanel panelAngebot = new JPanel();
-		tabbedPane.addTab("Angebot    ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Angebot.png")), panelAngebot, null);
+		tabbedPane.addTab("Angebot    ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Angebot.png")),
+				panelAngebot, null);
 		panelAngebot.setLayout(null);
 
 		JScrollPane scrollPaneAngebot = new JScrollPane();
@@ -220,11 +241,11 @@ public class AdminGUI extends JFrame {
 
 		// GESCHAEFT
 		JPanel panelGeschaeft = new JPanel();
-		tabbedPane.addTab("Gesch\u00E4ft    ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Geschaeft.png")),
-				panelGeschaeft, null);
+		tabbedPane.addTab("Gesch\u00E4ft    ",
+				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Geschaeft.png")), panelGeschaeft, null);
 		panelGeschaeft.setLayout(null);
 
-		JScrollPane scrollPaneGeschaeft = new JScrollPane();
+		scrollPaneGeschaeft = new JScrollPane();
 		scrollPaneGeschaeft.setBounds(10, 5, 579, 431);
 		scrollPaneGeschaeft.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelGeschaeft.add(scrollPaneGeschaeft);
@@ -253,8 +274,8 @@ public class AdminGUI extends JFrame {
 
 		// USER
 		JPanel panelUser = new JPanel();
-		tabbedPane.addTab("User            ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/User.png")), panelUser, null);
+		tabbedPane.addTab("User            ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/User.png")),
+				panelUser, null);
 		panelUser.setLayout(null);
 
 		JScrollPane scrollPaneUser = new JScrollPane();
@@ -286,6 +307,11 @@ public class AdminGUI extends JFrame {
 
 	}
 
+	private void setDefaultCloseOperation(WindowListener windowListener) {
+		// TODO Auto-generated method stub
+
+	}
+
 	protected void actionPerformed_refresh() {
 		this.ctrl = new Controller();
 		RELATIONS[0] = ctrl.ARTIKEL;
@@ -312,7 +338,14 @@ public class AdminGUI extends JFrame {
 	}
 
 	public Object[] showAddDialog(int tabIndex) {
-		return ad.showAmodiDialog(this, "Add "+RELATIONS[tabIndex][0],RELATIONS[tabIndex][0] , new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/"+RELATIONS[tabIndex][0]+".png")));
+		if (tabIndex == 1) {
+			ad.setArtikelTable(new JTable(new DefaultTableModel(ctrl.loadData(ctrl.ARTIKEL),
+					Arrays.copyOfRange(ctrl.ARTIKEL, 1, ctrl.ARTIKEL.length))));
+			ad.setGeschaeftID(new JTable(new DefaultTableModel(ctrl.loadData(ctrl.GESCHAEFT),
+					Arrays.copyOfRange(ctrl.GESCHAEFT, 1, ctrl.GESCHAEFT.length))));
+		}
+		return ad.showAmodiDialog(this, "Add " + RELATIONS[tabIndex][0], RELATIONS[tabIndex][0],
+				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/" + RELATIONS[tabIndex][0] + ".png")));
 	}
 
 	public boolean actionPerformed_remove() {
@@ -409,4 +442,5 @@ public class AdminGUI extends JFrame {
 			}
 		}
 	}
+
 }

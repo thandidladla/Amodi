@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JPasswordField;
 import java.awt.Font;
@@ -39,7 +41,6 @@ public class Login extends JFrame {
 			public void run() {
 				try {
 					Login frame = new Login();
-					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,6 +53,22 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		ctrl = new Controller();
+		if(!ctrl.isConnected()){
+			return;
+		}
+		WindowAdapter exitListener = new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
+						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == 0) {
+					ctrl.disconnect();
+					System.exit(0);
+				}
+			}
+		};
+		this.addWindowListener(exitListener);
 		setTitle("Login");
 		setOpacity(1.0f);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,6 +142,7 @@ public class Login extends JFrame {
 		btnRegister.setBackground(new Color(240, 230, 140));
 		btnRegister.setBounds(282, 216, 120, 28);
 		lblBackground.add(btnRegister);
+		this.setVisible(true);
 	}
 	
 	private void actionPerformed_login(){
@@ -146,15 +164,12 @@ public class Login extends JFrame {
 				JOptionPane.showMessageDialog(null, "In work :-)");
 			}else{
 				JOptionPane.showMessageDialog(null, "Failed. Check your credentials and your connection to the internet.", "Error", JOptionPane.ERROR_MESSAGE);
-				txtUsername.setText("");
 				passwordField.setText("");
 
 			}
 		}else{
 			JOptionPane.showMessageDialog(null, "Failed. Check your credentials and your connection to the internet.", "Error", JOptionPane.ERROR_MESSAGE);
-			passwordField.setText("");
-			txtUsername.setText("");
-		}
+			passwordField.setText("");		}
 	}
 	
 	private String checkCredentials(){
