@@ -330,7 +330,7 @@ public class UserGUI extends JFrame {
 		JButton btnArtikeladd = new JButton("hinzuf\u00FCgen");
 		btnArtikeladd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Object[] result = { null, (String) cbgeschlecht.getSelectedItem(), txtmarke.getText(),
+				Object[] result = { null, (String) comboBox.getSelectedItem(), txtmarke.getText(),
 						txtfarbe.getText(), txttags.getText(), txtstil.getText(), null, txtart.getText(),
 						txtform.getText() };
 				ctrl.add(result, Controller.ANGEBOT);
