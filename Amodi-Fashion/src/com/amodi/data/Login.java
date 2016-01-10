@@ -5,18 +5,25 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPasswordField;
+
 import java.awt.Font;
 import java.awt.Color;
+
 import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.UIManager;
+import javax.swing.border.SoftBevelBorder;
 
 public class Login extends JFrame {
 	
@@ -26,7 +33,6 @@ public class Login extends JFrame {
 	private JPasswordField passwordField;
 	private JLabel lblUsername;
 	private JLabel labelPassword;
-	private JLabel lblAmodiFashion;
 	private JButton btnRegister;
 	private AdminGUI admin;
 	private UserGUI user;
@@ -63,43 +69,39 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblBackground = new JLabel("New label");
-		lblBackground.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/login_background.jpg")));
-		lblBackground.setBounds(0, 0, 585, 305);
-		contentPane.add(lblBackground);
-		
 		txtUsername = new JTextField();
+		contentPane.add(txtUsername);
 		txtUsername.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 11));
 		txtUsername.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		txtUsername.setBounds(277, 125, 105, 20);
+		txtUsername.setBounds(281, 108, 105, 20);
 		txtUsername.setColumns(10);
-		lblBackground.add(txtUsername);
 		
 		passwordField = new JPasswordField();
+		contentPane.add(passwordField);
 		passwordField.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		passwordField.setBounds(277, 159, 106, 20);
-		lblBackground.add(passwordField);
+		passwordField.setBounds(280, 142, 106, 20);
+		
+		labelPassword = new JLabel("Password:");
+		contentPane.add(labelPassword);
+		labelPassword.setForeground(Color.BLACK);
+		labelPassword.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14));
+		labelPassword.setBounds(193, 145, 78, 14);
 		
 		lblUsername = new JLabel("Username:");
+		contentPane.add(lblUsername);
 		lblUsername.setForeground(Color.BLACK);
 		lblUsername.setBackground(Color.WHITE);
 		lblUsername.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14));
-		lblUsername.setBounds(189, 126, 78, 14);
-		lblBackground.add(lblUsername);
+		lblUsername.setBounds(194, 111, 78, 14);
 		
-		labelPassword = new JLabel("Password:");
-		labelPassword.setForeground(Color.BLACK);
-		labelPassword.setFont(new Font("Segoe UI Symbol", Font.BOLD, 14));
-		labelPassword.setBounds(190, 161, 78, 14);
-		lblBackground.add(labelPassword);
-		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/Angebot.png")));
-		btnLogin.setBackground(new Color(240, 230, 140));
+		JButton btnLogin = new JButton("");
+		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/LoginButton1.png")));
+		contentPane.add(btnLogin);
+		btnLogin.setBorder(null);
+		btnLogin.setBackground(Color.WHITE);
 		btnLogin.setForeground(new Color(0, 0, 0));
 		btnLogin.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
-		btnLogin.setBounds(175, 216, 100, 28);
+		btnLogin.setBounds(175, 182, 100, 28);
 		this.getRootPane().setDefaultButton(btnLogin);
 		btnLogin.addActionListener(new ActionListener() {
 			
@@ -109,22 +111,19 @@ public class Login extends JFrame {
 				
 			}
 		});
-		lblBackground.add(btnLogin);
 		
-		lblAmodiFashion = new JLabel("Amodi Fashion");
-		lblAmodiFashion.setForeground(Color.BLACK);
-		lblAmodiFashion.setFont(new Font("Mistral", Font.BOLD, 50));
-		lblAmodiFashion.setBounds(150, 35, 411, 64);
-		lblBackground.add(lblAmodiFashion);
-		
-		btnRegister = new JButton("Register");
+		btnRegister = new JButton("");
+		contentPane.add(btnRegister);
 		btnRegister.setForeground(new Color(0, 0, 0));
-		btnRegister.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		btnRegister.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
-		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/User.png")));
-		btnRegister.setBackground(new Color(240, 230, 140));
-		btnRegister.setBounds(282, 216, 120, 28);
-		lblBackground.add(btnRegister);
+		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/RegisterButton1.png")));
+		btnRegister.setBackground(Color.WHITE);
+		btnRegister.setBounds(283, 182, 120, 28);
+		
+		JLabel lblBackground = new JLabel("New label");
+		lblBackground.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/AmodiLogin.png")));
+		lblBackground.setBounds(0, 0, 585, 305);
+		contentPane.add(lblBackground);
 	}
 	
 	private void actionPerformed_login(){
