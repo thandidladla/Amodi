@@ -63,14 +63,14 @@ public class AdminGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AdminGUI(Controller ctrl) {
+	public AdminGUI(Controller ctrl,AmodiDialog ad) {
 		this.ctrl = ctrl;
+		this.ad = ad;
 		this.RELATIONS[0] = ctrl.ARTIKEL;
 		this.RELATIONS[1] = ctrl.ANGEBOT;
 		this.RELATIONS[2] = ctrl.GESCHAEFT;
 		this.RELATIONS[3] = ctrl.USER;
 
-		this.ad = new AmodiDialog();
 		setTitle("Amodi Admin");
 		setLocationRelativeTo(null);
 		WindowAdapter exitListener = new WindowAdapter() {
@@ -79,13 +79,14 @@ public class AdminGUI extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
 						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-				if (confirm == 0) {
+				if (confirm == JOptionPane.YES_OPTION) {
 					ctrl.disconnect();
 					System.exit(0);
 				}
 			}
 		};
-		this.addWindowListener(exitListener);
+		addWindowListener(exitListener);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 898, 509);
 
 		// MENU-------------------------------------
@@ -104,7 +105,7 @@ public class AdminGUI extends JFrame {
 				if (data != null) {
 					String[] relation = (String[]) RELATIONS[tabbedPane.getSelectedIndex()];
 					ctrl.add(data, relation);
-					refreshTable(tabbedPane.getSelectedIndex());
+					initializeTable(tabbedPane.getSelectedIndex());
 
 				}
 
@@ -161,7 +162,7 @@ public class AdminGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (actionPerformed_remove()) {
-					refreshTable(tabbedPane.getSelectedIndex());
+					initializeTable(tabbedPane.getSelectedIndex());
 				} else {
 					JOptionPane.showMessageDialog(null, "Failed Removing from the Server.", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -205,17 +206,6 @@ public class AdminGUI extends JFrame {
 
 		tblArtikel = new JTable();
 		tables[0] = tblArtikel;
-		tblArtikel.setModel(new DefaultTableModel(ctrl.loadData(ctrl.ARTIKEL),
-				Arrays.copyOfRange(ctrl.ARTIKEL, 1, ctrl.ARTIKEL.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		
 		scrollPaneArtikel.setViewportView(tblArtikel);
 
 		// ANGEBOT
@@ -231,18 +221,6 @@ public class AdminGUI extends JFrame {
 
 		tblAngebot = new JTable();
 		tables[1] = tblAngebot;
-		tblAngebot.setModel(new DefaultTableModel(ctrl.loadData(ctrl.ANGEBOT),
-				Arrays.copyOfRange(ctrl.ANGEBOT, 1, ctrl.ANGEBOT.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		
-	
 		scrollPaneAngebot.setViewportView(tblAngebot);
 
 		// GESCHAEFT
@@ -258,16 +236,6 @@ public class AdminGUI extends JFrame {
 
 		tblGeschaeft = new JTable();
 		tables[2] = tblGeschaeft;
-		tblGeschaeft.setModel(new DefaultTableModel(ctrl.loadData(ctrl.GESCHAEFT),
-				Arrays.copyOfRange(ctrl.GESCHAEFT, 1, ctrl.GESCHAEFT.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
 		scrollPaneGeschaeft.setViewportView(tblGeschaeft);
 
 		// USER
@@ -283,43 +251,13 @@ public class AdminGUI extends JFrame {
 
 		tblUser = new JTable();
 		tables[3] = tblUser;
-		tblUser.setModel(
-				new DefaultTableModel(ctrl.loadData(ctrl.USER), Arrays.copyOfRange(ctrl.USER, 1, ctrl.USER.length)) {
-					public boolean isCellEditable(int row, int column) {
-						if (column == 0) {
-							return false;
-						} else {
-							return true;
-						}
-					}
-				});
-		
 		scrollPaneUser.setViewportView(tblUser);
 		
 		for(int i = 0;i < 4;i++){
-			tables[i].getModel().addTableModelListener(new TableModelListener() {
-				
-				@Override
-				public void tableChanged(TableModelEvent e) {
-					int index = tabbedPane.getSelectedIndex();
-					if (ad.checkValues(getRow(tables[index], e.getFirstRow()), RELATIONS[index][0])) {
-						ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
-								tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
-					} else {
-						JOptionPane.showMessageDialog(tables[index].getRootPane(), "Invalid value!.");
-						refreshTable(0);
-						repaint();
-					}
-					
-				}
-			});
+			initializeTable(i);
 		}
 	}
 
-	private void setDefaultCloseOperation(WindowListener windowListener) {
-		// TODO Auto-generated method stub
-
-	}
 
 	protected void actionPerformed_refresh() {
 		this.ctrl = new Controller();
@@ -328,26 +266,33 @@ public class AdminGUI extends JFrame {
 		RELATIONS[2] = ctrl.GESCHAEFT;
 		RELATIONS[3] = ctrl.USER;
 		for (int i = 0; i < 4; i++) {
-			refreshTable(i);
+			initializeTable(i);
 		}
 	}
 
-	protected void refreshTable(int index) {
+	protected void initializeTable(int index) {
 		String[] relation = (String[]) RELATIONS[index];
 		tables[index].setModel(
-				new DefaultTableModel(ctrl.loadData(relation), Arrays.copyOfRange(relation, 1, relation.length)));
+				new DefaultTableModel(ctrl.loadData(relation), Arrays.copyOfRange(relation, 1, relation.length)){
+					public boolean isCellEditable(int row, int column) {
+						if (column == 0) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				});
 		tables[index].getModel().addTableModelListener(new TableModelListener() {
 			
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				int index = tabbedPane.getSelectedIndex();
-				if (ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[index][0])) {
-					System.out.println("true");
+				if (ad.checkValues(getRow(tables[index], e.getFirstRow()), RELATIONS[index][0])) {
 					ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
 							tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
 				} else {
 					JOptionPane.showMessageDialog(tables[index].getRootPane(), "Invalid value!.");
-					refreshTable(0);
+					initializeTable(index);
 					repaint();
 				}
 				

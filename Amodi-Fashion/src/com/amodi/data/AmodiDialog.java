@@ -2,6 +2,7 @@ package com.amodi.data;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -12,11 +13,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JRootPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.text.DefaultEditorKit.CopyAction;
 
 public class AmodiDialog {
 	private JTextField txtmarke, txtfarbe, txttags, txtstil, txtart, txtform;
@@ -62,7 +65,7 @@ public class AmodiDialog {
 		txtgstrasse = new JTextField();
 		txtgplz = new JTextField();
 		txtgort = new JTextField();
-		geschaeft = new JComponent[] {null, new JLabel("Geschaeftsname:"), txtgname, new JLabel("Link:"), txtlink,
+		geschaeft = new JComponent[] { null, new JLabel("Geschaeftsname:"), txtgname, new JLabel("Link:"), txtlink,
 				new JLabel("Straﬂe:"), txtgstrasse, new JLabel("Postleihzahl:"), txtgplz, new JLabel("Ort:"), txtgort };
 
 		// User
@@ -88,7 +91,7 @@ public class AmodiDialog {
 			case "Artikel":
 				components = artikel;
 				i = JOptionPane.showConfirmDialog(owner, components, title, JOptionPane.OK_CANCEL_OPTION, 0, icon);
-				if(i != JOptionPane.OK_OPTION){
+				if (i != JOptionPane.OK_OPTION) {
 					return null;
 				}
 				values = new String[] { null, (String) cbgeschlecht.getSelectedItem(), txtmarke.getText(),
@@ -98,35 +101,33 @@ public class AmodiDialog {
 			case "Angebot":
 				components = angebot;
 				i = JOptionPane.showConfirmDialog(owner, components, title, JOptionPane.OK_CANCEL_OPTION, 0, icon);
-				if(i != JOptionPane.OK_OPTION){
+				if (i != JOptionPane.OK_OPTION) {
 					return null;
 				}
 				Integer aid = showSelectionDialog(owner, this.artikelTable, "Artikel", icon);
-				if(aid == -2){
+				if (aid == -2) {
 					return null;
 				}
 				Integer gid = showSelectionDialog(owner, this.geschaeftTable, "Gesch‰ft", icon);
-				if(gid == -2){
+				if (gid == -2) {
 					return null;
 				}
-				values = new String[] { txtstart.getText(), txtend.getText(), txtstatus.getText(),
-						txtpreis.getText(), txtaart.getText(),
-						aid.toString(),
-						gid.toString() };
+				values = new String[] {null, txtstart.getText(), txtend.getText(), txtstatus.getText(), txtpreis.getText(),
+						txtaart.getText(), aid.toString(), gid.toString() };
 				break;
 			case "Geschaeft":
 				components = geschaeft;
 				i = JOptionPane.showConfirmDialog(owner, components, title, JOptionPane.OK_CANCEL_OPTION, 0, icon);
-				if(i != JOptionPane.OK_OPTION){
+				if (i != JOptionPane.OK_OPTION) {
 					return null;
 				}
-				values = new String[] { null,txtgname.getText(), txtlink.getText(), txtgstrasse.getText(), txtgplz.getText(),
-						txtgort.getText() };
+				values = new String[] { null, txtgname.getText(), txtlink.getText(), txtgstrasse.getText(),
+						txtgplz.getText(), txtgort.getText() };
 				break;
 			case "User":
 				components = user;
 				i = JOptionPane.showConfirmDialog(owner, components, title, JOptionPane.OK_CANCEL_OPTION, 0, icon);
-				if(i != JOptionPane.OK_OPTION){
+				if (i != JOptionPane.OK_OPTION) {
 					return null;
 				}
 				values = new String[] { txtuname.getText(), Integer.toString(new String(upw.getPassword()).hashCode()),
@@ -148,51 +149,52 @@ public class AmodiDialog {
 	public boolean checkValues(Object[] values, String relation) {
 		switch (relation) {
 		case "Artikel":
-			boolean geschlecht = values[1].equals("m‰nnlich") || values[1].equals("weiblich") || values[1].equals("unisex");
-			boolean farbe = !((String) values[3]).matches("^\\s*$") && !((String) values[3]).matches(".*\\d.*");
-			boolean tags = !((String) values[4]).matches("^\\s*$");
-			boolean stil = !((String) values[5]).matches("^\\s*$") && !((String) values[5]).matches(".*\\d.*");
-			boolean art = !((String) values[7]).matches("^\\s*$") && !((String) values[7]).matches(".*\\d.*");
-			boolean form = !((String) values[8]).matches("^\\s*$") && !((String) values[8]).matches(".*\\d.*");
+			boolean geschlecht = values[1].equals("m‰nnlich") || values[1].equals("weiblich")
+					|| values[1].equals("unisex");
+			boolean farbe = !((String) values[3]).matches(".*\\s+.*") && !((String) values[3]).matches(".*\\d.*");
+			boolean tags = !((String) values[4]).matches(".*\\s+.*");
+			boolean stil = !((String) values[5]).matches(".*\\s+.*") && !((String) values[5]).matches(".*\\d.*");
+			boolean art = !((String) values[7]).matches(".*\\s+.*") && !((String) values[7]).matches(".*\\d.*");
+			boolean form = !((String) values[8]).matches(".*\\s+.*") && !((String) values[8]).matches(".*\\d.*");
 			return geschlecht && farbe && tags && stil && art && form;
 
 		case "Angebot":
 			boolean dates = false;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		    try {
-		        sdf.parse((String) values[0]);
-		        sdf.parse((String) values[1]);
-		        dates  = true;
-		    } catch (ParseException e) {
-		        return false;
-		    }
-			boolean status = !((String) values[2]).matches("^\\s*$") && !((String) values[2]).matches(".*\\d.*");
+			try {
+				sdf.parse(values[1].toString());
+				sdf.parse(values[2].toString());
+				dates = true;
+			} catch (ParseException e) {
+				return false;
+			}
+			boolean status = !((String) values[3]).matches(".*\\s+.*") && !((String) values[3]).matches(".*\\d.*");
 			boolean preis = false;
 			try {
-				double p = Double.parseDouble((String) values[3]);
+				double p = Double.parseDouble(values[4].toString());
 				preis = true;
 			} catch (NumberFormatException e) {
 				return false;
 			}
-			boolean ids = ((String)values[5]) != "-1" && ((String)values[6]) != "-1";
+			boolean ids = !values[6].toString().equals("-1") && !values[7].toString().equals("-1");
 			return status && ids;
 		case "Geschaeft":
 			boolean name = !((String) values[1]).matches(".*\\d.*") && !((String) values[1]).matches(".*\\d.*");
-			boolean ort = !((String) values[3]).matches(".*\\d.*") && !((String) values[3]).matches(".*\\d.*");
+			boolean ort = !((String) values[5]).matches(".*\\d.*") && !((String) values[5]).matches(".*\\d.*");
 			boolean plz;
 			try {
-				int p = Integer.parseInt((String) values[4]);
+				int p = Integer.parseInt(values[4].toString());
 				plz = true;
 			} catch (NumberFormatException e) {
 				plz = false;
 			}
 			return name && ort && plz;
 		case "User":
-			boolean rang = values[5] == "admin" || values[5] == "user";
+			boolean rang = values[5].equals("admin") || values[5].equals("user");
 			boolean uort = !((String) values[4]).matches(".*\\d.*");
 			boolean uplz;
 			try {
-				int p = Integer.parseInt((String) values[3]);
+				int p = Integer.parseInt(values[3].toString());
 				uplz = true;
 			} catch (NumberFormatException e) {
 				uplz = false;
@@ -274,4 +276,27 @@ public class AmodiDialog {
 		}
 	}
 
+	public Object[] showSignUpDialog(JRootPane owner, String title, Icon icon) {
+		JComponent[] components;
+		int i;
+		boolean b;
+		do {
+			components = Arrays.copyOfRange(user, 0, user.length - 2);
+			i = JOptionPane.showConfirmDialog(owner, components, title, JOptionPane.OK_CANCEL_OPTION, 0, icon);
+			if (i != JOptionPane.OK_OPTION) {
+				return null;
+			}
+			String[] values = new String[] { txtuname.getText(),
+					Integer.toString(new String(upw.getPassword()).hashCode()), txtemail.getText(), txtuplz.getText(),
+					txtuort.getText(),"user" };
+			if (b = checkValues(values, "User") && i == JOptionPane.OK_OPTION) {
+				blankDialog("User");
+				return values;
+			} else if (i == JOptionPane.OK_OPTION) {
+				JOptionPane.showMessageDialog(owner, "Invalid data!");
+			}
+
+		} while (i == JOptionPane.OK_OPTION && !b);
+		return null;
+	}
 }

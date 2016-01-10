@@ -128,7 +128,7 @@ public class Controller {
 					if (i == 0) {
 						query1 = "INSERT INTO " + relation[i] + " (";
 						query2 = "VALUES (";
-					} else if (i != 1 || (i == 1 && (relation == ANGEBOT || relation == USER))) {
+					} else if (i != 1 || (i == 1 && (relation == USER))) {
 						query1 += relation[i];
 						query2 += "'" + (String) row[i - 1] + "'";
 						if (i != relation.length - 1) {

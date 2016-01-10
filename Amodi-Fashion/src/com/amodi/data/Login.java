@@ -29,23 +29,16 @@ public class Login extends JFrame {
 	private JLabel lblUsername;
 	private JLabel labelPassword;
 	private JLabel lblAmodiFashion;
-	private JButton btnRegister;
+	private JButton btnSignUp;
 	private AdminGUI admin;
+	private AmodiDialog ad;
 	
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		Login frame = new Login();
 	}
 
 	/**
@@ -53,6 +46,7 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		ctrl = new Controller();
+		ad = new AmodiDialog();
 		if(!ctrl.isConnected()){
 			return;
 		}
@@ -62,16 +56,16 @@ public class Login extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
 						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-				if (confirm == 0) {
+				if (confirm == JOptionPane.YES_OPTION) {
 					ctrl.disconnect();
 					System.exit(0);
 				}
 			}
 		};
 		this.addWindowListener(exitListener);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setTitle("Login");
 		setOpacity(1.0f);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(590, 334);
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -134,14 +128,25 @@ public class Login extends JFrame {
 		lblAmodiFashion.setBounds(150, 35, 411, 64);
 		lblBackground.add(lblAmodiFashion);
 		
-		btnRegister = new JButton("Register");
-		btnRegister.setForeground(new Color(0, 0, 0));
-		btnRegister.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-		btnRegister.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
-		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/User.png")));
-		btnRegister.setBackground(new Color(240, 230, 140));
-		btnRegister.setBounds(282, 216, 120, 28);
-		lblBackground.add(btnRegister);
+		btnSignUp = new JButton("Sign up");
+		btnSignUp.setForeground(new Color(0, 0, 0));
+		btnSignUp.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		btnSignUp.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
+		btnSignUp.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/User.png")));
+		btnSignUp.setBackground(new Color(240, 230, 140));
+		btnSignUp.setBounds(282, 216, 120, 28);
+		btnSignUp.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object[] data = ad.showSignUpDialog(getRootPane(), "Sign up", new ImageIcon(Login.class.getResource("/com/amodi/res/signup.png")));
+				if(data != null){
+					ctrl.add(data, ctrl.USER);
+					JOptionPane.showMessageDialog(getRootPane(), "Signed up successful! Please login.");
+				}
+			}
+		});
+		lblBackground.add(btnSignUp);
 		this.setVisible(true);
 	}
 	
@@ -153,7 +158,7 @@ public class Login extends JFrame {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							admin = new AdminGUI(ctrl);
+							admin = new AdminGUI(ctrl,ad);
 							admin.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
