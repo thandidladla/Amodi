@@ -27,7 +27,7 @@ import javax.swing.JComponent;
 public class UserGUI extends JFrame {
 
 	private JPanel contentPane;
-	private Controller ctrl = new Controller();
+	private Controller ctrl;
 	private JLabel[] Labels  = new JLabel[10];
 	private int Seite = 0;
 	private JTextField txtAngebot;

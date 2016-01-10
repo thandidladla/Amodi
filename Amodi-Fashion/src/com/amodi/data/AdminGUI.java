@@ -4,6 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -13,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.plaf.IconUIResource;
@@ -25,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -51,6 +59,8 @@ public class AdminGUI extends JFrame {
 	// Array mit zugehörigen Relationen für Tab-Index
 	private final String[][] RELATIONS = new String[4][];
 	private JTable[] tables = new JTable[4];
+	private JScrollPane scrollPaneArtikel;
+	private JScrollPane scrollPaneGeschaeft;
 
 	/**
 	 * Create the frame.
@@ -59,16 +69,30 @@ public class AdminGUI extends JFrame {
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public AdminGUI(Controller ctrl) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	public AdminGUI(Controller ctrl,AmodiDialog ad) {
 		this.ctrl = ctrl;
+		this.ad = ad;
 		this.RELATIONS[0] = ctrl.ARTIKEL;
 		this.RELATIONS[1] = ctrl.ANGEBOT;
 		this.RELATIONS[2] = ctrl.GESCHAEFT;
 		this.RELATIONS[3] = ctrl.USER;
-		
-		this.ad = new AmodiDialog();
+
 		setTitle("Amodi Admin");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		WindowAdapter exitListener = new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
+						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == JOptionPane.YES_OPTION) {
+					ctrl.disconnect();
+					System.exit(0);
+				}
+			}
+		};
+		addWindowListener(exitListener);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 898, 509);
 		// MENU-------------------------------------
 		JMenuBar menuBar = new JMenuBar();
@@ -86,7 +110,8 @@ public class AdminGUI extends JFrame {
 				if (data != null) {
 					String[] relation = (String[]) RELATIONS[tabbedPane.getSelectedIndex()];
 					ctrl.add(data, relation);
-					refreshTable(tabbedPane.getSelectedIndex());
+					initializeTable(tabbedPane.getSelectedIndex());
+
 				}
 
 			}
@@ -95,6 +120,17 @@ public class AdminGUI extends JFrame {
 
 		JMenuItem mntmRemove = new JMenuItem("Remove");
 		mnTools.add(mntmRemove);
+		
+		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.remove(tabbedPane.getSelectedIndex());
+			}
+		});
+		mntmClose.setEnabled(false);
+		mnTools.add(mntmClose);
 
 		JMenu mnServer = new JMenu("Server");
 		menuBar.add(mnServer);
@@ -131,7 +167,7 @@ public class AdminGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (actionPerformed_remove()) {
-					refreshTable(tabbedPane.getSelectedIndex());
+					initializeTable(tabbedPane.getSelectedIndex());
 				} else {
 					JOptionPane.showMessageDialog(null, "Failed Removing from the Server.", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -147,51 +183,40 @@ public class AdminGUI extends JFrame {
 		setContentPane(contentPane);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if(tabbedPane.getSelectedIndex() > 3){
+					mntmClose.setEnabled(true);
+				}else{
+					mntmClose.setEnabled(false);
+				}
+				
+			}
+		});
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		// TABS-------------------------------------------------------
 		// ARTIKEL
 		JPanel panelArtikel = new JPanel();
-		tabbedPane.addTab("Artikel        ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Artikel.png")), panelArtikel, null);
+		tabbedPane.addTab("Artikel        ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Artikel.png")),
+				panelArtikel, null);
 		panelArtikel.setLayout(null);
 
-		JScrollPane scrollPaneArtikel = new JScrollPane();
+		scrollPaneArtikel = new JScrollPane();
 		scrollPaneArtikel.setBounds(10, 11, 743, 427);
 		scrollPaneArtikel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelArtikel.add(scrollPaneArtikel);
 
 		tblArtikel = new JTable();
 		tables[0] = tblArtikel;
-		tblArtikel.setModel(new DefaultTableModel(ctrl.loadData(ctrl.ARTIKEL),
-				Arrays.copyOfRange(ctrl.ARTIKEL, 1, ctrl.ARTIKEL.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		tblArtikel.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				if(ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[0][0])){
-					ctrl.edit(tblArtikel.getValueAt(e.getLastRow(), 0),
-						tblArtikel.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ARTIKEL);
-				}else{
-					JOptionPane.showMessageDialog(tblArtikel.getRootPane(), "Invalid value!.");
-					refreshTable(0);
-				}
-			}
-		});
 		scrollPaneArtikel.setViewportView(tblArtikel);
 
 		// ANGEBOT
 		JPanel panelAngebot = new JPanel();
-		tabbedPane.addTab("Angebot    ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Angebot.png")), panelAngebot, null);
+		tabbedPane.addTab("Angebot    ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Angebot.png")),
+				panelAngebot, null);
 		panelAngebot.setLayout(null);
 
 		JScrollPane scrollPaneAngebot = new JScrollPane();
@@ -201,65 +226,27 @@ public class AdminGUI extends JFrame {
 
 		tblAngebot = new JTable();
 		tables[1] = tblAngebot;
-		tblAngebot.setModel(new DefaultTableModel(ctrl.loadData(ctrl.ANGEBOT),
-				Arrays.copyOfRange(ctrl.ANGEBOT, 1, ctrl.ANGEBOT.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		tblAngebot.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-
-				ctrl.edit(tblAngebot.getValueAt(e.getLastRow(), 0),
-						tblAngebot.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ANGEBOT);
-			}
-		});
-
 		scrollPaneAngebot.setViewportView(tblAngebot);
 
 		// GESCHAEFT
 		JPanel panelGeschaeft = new JPanel();
-		tabbedPane.addTab("Gesch\u00E4ft    ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Geschaeft.png")),
-				panelGeschaeft, null);
+		tabbedPane.addTab("Gesch\u00E4ft    ",
+				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/Geschaeft.png")), panelGeschaeft, null);
 		panelGeschaeft.setLayout(null);
 
-		JScrollPane scrollPaneGeschaeft = new JScrollPane();
+		scrollPaneGeschaeft = new JScrollPane();
 		scrollPaneGeschaeft.setBounds(10, 5, 579, 431);
 		scrollPaneGeschaeft.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelGeschaeft.add(scrollPaneGeschaeft);
 
 		tblGeschaeft = new JTable();
 		tables[2] = tblGeschaeft;
-		tblGeschaeft.setModel(new DefaultTableModel(ctrl.loadData(ctrl.GESCHAEFT),
-				Arrays.copyOfRange(ctrl.GESCHAEFT, 1, ctrl.GESCHAEFT.length)) {
-			public boolean isCellEditable(int row, int column) {
-				if (column == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		tblGeschaeft.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				ctrl.edit(tblGeschaeft.getValueAt(e.getLastRow(), 0),
-						tblGeschaeft.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.GESCHAEFT);
-			}
-		});
 		scrollPaneGeschaeft.setViewportView(tblGeschaeft);
 
 		// USER
 		JPanel panelUser = new JPanel();
-		tabbedPane.addTab("User            ",
-				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/User.png")), panelUser, null);
+		tabbedPane.addTab("User            ", new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/User.png")),
+				panelUser, null);
 		panelUser.setLayout(null);
 
 		JScrollPane scrollPaneUser = new JScrollPane();
@@ -269,27 +256,13 @@ public class AdminGUI extends JFrame {
 
 		tblUser = new JTable();
 		tables[3] = tblUser;
-		tblUser.setModel(
-				new DefaultTableModel(ctrl.loadData(ctrl.USER), Arrays.copyOfRange(ctrl.USER, 1, ctrl.USER.length)) {
-					public boolean isCellEditable(int row, int column) {
-						if (column == 0) {
-							return false;
-						} else {
-							return true;
-						}
-					}
-				});
-		tblUser.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				ctrl.edit(tblUser.getValueAt(e.getLastRow(), 0), tblUser.getValueAt(e.getLastRow(), e.getColumn()),
-						e.getColumn(), ctrl.USER);
-			}
-		});
 		scrollPaneUser.setViewportView(tblUser);
-
+		
+		for(int i = 0;i < 4;i++){
+			initializeTable(i);
+		}
 	}
+
 
 	protected void actionPerformed_refresh() {
 		this.ctrl = new Controller();
@@ -298,14 +271,38 @@ public class AdminGUI extends JFrame {
 		RELATIONS[2] = ctrl.GESCHAEFT;
 		RELATIONS[3] = ctrl.USER;
 		for (int i = 0; i < 4; i++) {
-			refreshTable(i);
+			initializeTable(i);
 		}
 	}
 
-	protected void refreshTable(int index) {
+	protected void initializeTable(int index) {
 		String[] relation = (String[]) RELATIONS[index];
 		tables[index].setModel(
-				new DefaultTableModel(ctrl.loadData(relation), Arrays.copyOfRange(relation, 1, relation.length)));
+				new DefaultTableModel(ctrl.loadData(relation), Arrays.copyOfRange(relation, 1, relation.length)){
+					public boolean isCellEditable(int row, int column) {
+						if (column == 0) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				});
+		tables[index].getModel().addTableModelListener(new TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				int index = tabbedPane.getSelectedIndex();
+				if (ad.checkValues(getRow(tables[index], e.getFirstRow()), RELATIONS[index][0])) {
+					ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
+							tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
+				} else {
+					JOptionPane.showMessageDialog(tables[index].getRootPane(), "Invalid value!.");
+					initializeTable(index);
+					repaint();
+				}
+				
+			}
+		});
 		tables[index].repaint();
 	}
 
@@ -317,7 +314,14 @@ public class AdminGUI extends JFrame {
 	}
 
 	public Object[] showAddDialog(int tabIndex) {
-		return ad.showAmodiDialog(this, "Add "+RELATIONS[tabIndex][0],RELATIONS[tabIndex][0] , new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/"+RELATIONS[tabIndex][0]+".png")));
+		if (tabIndex == 1) {
+			ad.setArtikelTable(new JTable(new DefaultTableModel(ctrl.loadData(ctrl.ARTIKEL),
+					Arrays.copyOfRange(ctrl.ARTIKEL, 1, ctrl.ARTIKEL.length))));
+			ad.setGeschaeftID(new JTable(new DefaultTableModel(ctrl.loadData(ctrl.GESCHAEFT),
+					Arrays.copyOfRange(ctrl.GESCHAEFT, 1, ctrl.GESCHAEFT.length))));
+		}
+		return ad.showAmodiDialog(this, "Add " + RELATIONS[tabIndex][0], RELATIONS[tabIndex][0],
+				new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/" + RELATIONS[tabIndex][0] + ".png")));
 	}
 
 	public boolean actionPerformed_remove() {
@@ -414,4 +418,5 @@ public class AdminGUI extends JFrame {
 			}
 		}
 	}
+
 }

@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JPasswordField;
 
@@ -33,24 +35,16 @@ public class Login extends JFrame {
 	private JPasswordField passwordField;
 	private JLabel lblUsername;
 	private JLabel labelPassword;
-	private JButton btnRegister;
+	private JButton btnSignUp;
 	private AdminGUI admin;
+	private AmodiDialog ad;
 	private UserGUI user;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		Login frame = new Login();
 	}
 
 	/**
@@ -58,9 +52,26 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		ctrl = new Controller();
+		ad = new AmodiDialog();
+		if(!ctrl.isConnected()){
+			return;
+		}
+		WindowAdapter exitListener = new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(null, "Are you sure to close Application?",
+						"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == JOptionPane.YES_OPTION) {
+					ctrl.disconnect();
+					System.exit(0);
+				}
+			}
+		};
+		this.addWindowListener(exitListener);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setTitle("Login");
 		setOpacity(1.0f);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(590, 334);
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -112,18 +123,33 @@ public class Login extends JFrame {
 			}
 		});
 		
-		btnRegister = new JButton("");
-		contentPane.add(btnRegister);
-		btnRegister.setForeground(new Color(0, 0, 0));
-		btnRegister.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
-		btnRegister.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/RegisterButton1.png")));
-		btnRegister.setBackground(Color.WHITE);
-		btnRegister.setBounds(283, 182, 120, 28);
+		btnSignUp = new JButton("");
+		contentPane.add(btnSignUp);
+		btnSignUp.setForeground(new Color(0, 0, 0));
+		btnSignUp.setFont(new Font("Segoe UI Symbol", Font.BOLD, 12));
+		btnSignUp.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/RegisterButton1.png")));
+		btnSignUp.setBackground(Color.WHITE);
+		btnSignUp.setBounds(283, 182, 120, 28);
 		
 		JLabel lblBackground = new JLabel("New label");
 		lblBackground.setIcon(new ImageIcon(Login.class.getResource("/com/amodi/res/AmodiLogin.png")));
 		lblBackground.setBounds(0, 0, 585, 305);
 		contentPane.add(lblBackground);
+		
+		
+		btnSignUp.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object[] data = ad.showSignUpDialog(getRootPane(), "Sign up", new ImageIcon(Login.class.getResource("/com/amodi/res/signup.png")));
+				if(data != null){
+					ctrl.add(data, ctrl.USER);
+					JOptionPane.showMessageDialog(getRootPane(), "Signed up successful! Please login.");
+				}
+			}
+		});
+		lblBackground.add(btnSignUp);
+		this.setVisible(true);
 	}
 	
 	private void actionPerformed_login(){
@@ -134,7 +160,7 @@ public class Login extends JFrame {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							admin = new AdminGUI(ctrl);
+							admin = new AdminGUI(ctrl,ad);
 							admin.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -155,15 +181,12 @@ public class Login extends JFrame {
 				});
 			}else{
 				JOptionPane.showMessageDialog(null, "Failed. Check your credentials and your connection to the internet.", "Error", JOptionPane.ERROR_MESSAGE);
-				txtUsername.setText("");
 				passwordField.setText("");
 
 			}
 		}else{
 			JOptionPane.showMessageDialog(null, "Failed. Check your credentials and your connection to the internet.", "Error", JOptionPane.ERROR_MESSAGE);
-			passwordField.setText("");
-			txtUsername.setText("");
-		}
+			passwordField.setText("");		}
 	}
 	
 	private String checkCredentials(){

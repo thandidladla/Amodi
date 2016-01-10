@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSetMetaData;
+import javax.swing.JOptionPane;
 
 public class Controller {
 	private Connection connect = null;
@@ -24,11 +25,17 @@ public class Controller {
 	public final String[] ANGEBOT;
 
 	public Controller() {
-		connect();
-		GESCHAEFT = getRelation("Geschaeft");
-		USER = getRelation("User");
-		ARTIKEL = getRelation("Artikel");
-		ANGEBOT = getRelation("Angebot");
+		if(connect()){
+			GESCHAEFT = getRelation("Geschaeft");
+			USER = getRelation("User");
+			ARTIKEL = getRelation("Artikel");
+			ANGEBOT = getRelation("Angebot");
+		}else{
+			GESCHAEFT = null;
+			USER = null;
+			ARTIKEL = null;
+			ANGEBOT = null;
+		}
 	}
 
 	/**
@@ -55,7 +62,7 @@ public class Controller {
 			try {
 				return !statement.execute(query);
 			} catch (SQLException e) {
-				System.out.println(e);
+				JOptionPane.showMessageDialog(null, e.getMessage(), "Error.", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 		} else {
@@ -119,7 +126,7 @@ public class Controller {
 					if (i == 0) {
 						query1 = "INSERT INTO " + relation[i] + " (";
 						query2 = "VALUES (";
-					} else if (i != 1 || (i == 1 && (relation == GESCHAEFT || relation == USER))) {
+					} else if (i != 1 || (i == 1 && (relation == USER))) {
 						query1 += relation[i];
 						query2 += "'" + (String) row[i - 1] + "'";
 						if (i != relation.length - 1) {
@@ -135,7 +142,7 @@ public class Controller {
 					statement.execute(query1 + query2);
 					return true;
 				} catch (SQLException e) {
-					System.out.println(e);
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);;
 					return false;
 				}
 			} else {
@@ -251,16 +258,28 @@ public class Controller {
 			connect = DriverManager.getConnection("jdbc:mysql://sql4.freesqldatabase.com/sql4102535", "sql4102535",
 					"pzLF3mtPK6");
 			statement = connect.createStatement();
-			System.out.println("established");
+			JOptionPane.showMessageDialog(null, "Connection established!", "Information", JOptionPane.INFORMATION_MESSAGE);
 			connected = true;
 			return true;
 		} catch (Exception e) {
-			System.out.println(e);
+			JOptionPane.showMessageDialog(null, "Error, check your Internet connection.", "Connection failed", JOptionPane.ERROR_MESSAGE);
 			connected = false;
 			return false;
 		}
 	}
-
+	
+	public boolean disconnect()
+	{
+		if(isConnected()){
+			try {
+				connect.close();
+				return true;
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		}return false;
+	}
 	public String checkCredentials(String username, String password) {
 		if (connected) {
 			try {
@@ -316,6 +335,7 @@ public class Controller {
 			}
 			return relation;
 		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		
