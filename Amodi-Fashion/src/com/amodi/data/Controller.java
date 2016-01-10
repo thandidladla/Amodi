@@ -248,8 +248,8 @@ public class Controller {
 	public boolean connect() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			connect = DriverManager.getConnection("jdbc:mysql://sql4.freesqldatabase.com/sql4101525", "sql4101525",
-					"UWI2EssbM6");
+			connect = DriverManager.getConnection("jdbc:mysql://sql4.freesqldatabase.com/sql4102535", "sql4102535",
+					"pzLF3mtPK6");
 			statement = connect.createStatement();
 			System.out.println("established");
 			connected = true;
