@@ -23,6 +23,8 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.JComponent;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 
 public class UserGUI extends JFrame {
 
@@ -69,7 +71,7 @@ public class UserGUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 0, 789, 477);
+		tabbedPane.setBounds(0, 0, 789, 487);
 		contentPane.add(tabbedPane);
 		
 		JPanel panel_offers = new JPanel();
@@ -78,127 +80,136 @@ public class UserGUI extends JFrame {
 		
 		panel_offers.setBackground(SystemColor.control);
 		panel_offers.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		panel_offers.setLayout(null);
 		
-		GridBagLayout gbl_panel_offers = new GridBagLayout();
-		gbl_panel_offers.columnWidths = new int[] {5, 100, 5, 100, 5, 100, 5, 100, 5, 135, 30};
-		gbl_panel_offers.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel_offers.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-		gbl_panel_offers.rowWeights = new double[]{1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		panel_offers.setLayout(gbl_panel_offers);
+		JLabel lblPicture1 = new JLabel("Picture");
+		lblPicture1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPicture1.setBackground(Color.LIGHT_GRAY);
+		lblPicture1.setBounds(82, 46, 95, 103);
+		panel_offers.add(lblPicture1);
 		
 		JLabel lblAngebot_0 = new JLabel("A1");
-		GridBagConstraints gbc_lblAngebot_0 = new GridBagConstraints();
-		gbc_lblAngebot_0.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_0.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_0.gridx = 1;
-		gbc_lblAngebot_0.gridy = 1;
-		panel_offers.add(lblAngebot_0, gbc_lblAngebot_0);
+		lblAngebot_0.setBounds(82, 160, 95, 14);
+		panel_offers.add(lblAngebot_0);
 		Labels[0]=lblAngebot_0;
 		
 		JLabel lblAngebot_1 = new JLabel("A2");
-		GridBagConstraints gbc_lblAngebot_1 = new GridBagConstraints();
-		gbc_lblAngebot_1.anchor = GridBagConstraints.NORTH;
-		gbc_lblAngebot_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_1.gridx = 3;
-		gbc_lblAngebot_1.gridy = 1;
-		panel_offers.add(lblAngebot_1, gbc_lblAngebot_1);
+		lblAngebot_1.setBounds(212, 160, 95, 14);
+		panel_offers.add(lblAngebot_1);
 		Labels[1]=lblAngebot_1;
 		
 		JLabel lblAngebot_2 = new JLabel("A3");
-		GridBagConstraints gbc_lblAngebot_2 = new GridBagConstraints();
-		gbc_lblAngebot_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_2.gridx = 5;
-		gbc_lblAngebot_2.gridy = 1;
-		panel_offers.add(lblAngebot_2, gbc_lblAngebot_2);
+		lblAngebot_2.setBounds(342, 160, 95, 14);
+		panel_offers.add(lblAngebot_2);
 		Labels[2]=lblAngebot_2;
 		
 		JLabel lblAngebot_3 = new JLabel("A4");
-		GridBagConstraints gbc_lblAngebot_3 = new GridBagConstraints();
-		gbc_lblAngebot_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_3.gridx = 7;
-		gbc_lblAngebot_3.gridy = 1;
-		panel_offers.add(lblAngebot_3, gbc_lblAngebot_3);
+		lblAngebot_3.setBounds(472, 160, 95, 14);
+		panel_offers.add(lblAngebot_3);
 		Labels[3]=lblAngebot_3;
 		
 		JLabel lblAngebot_4 = new JLabel("A5");
-		GridBagConstraints gbc_lblAngebot_4 = new GridBagConstraints();
-		gbc_lblAngebot_4.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_4.gridx = 9;
-		gbc_lblAngebot_4.gridy = 1;
-		panel_offers.add(lblAngebot_4, gbc_lblAngebot_4);
+		lblAngebot_4.setBounds(602, 160, 95, 14);
+		panel_offers.add(lblAngebot_4);
 		Labels[4]=lblAngebot_4;
 		
 		JLabel lblAngebot_5 = new JLabel("A6");
+		lblAngebot_5.setBounds(82, 289, 95, 14);
 		lblAngebot_5.setBackground(SystemColor.window);
-		GridBagConstraints gbc_lblAngebot_5 = new GridBagConstraints();
-		gbc_lblAngebot_5.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_5.gridx = 1;
-		gbc_lblAngebot_5.gridy = 3;
-		panel_offers.add(lblAngebot_5, gbc_lblAngebot_5);
+		panel_offers.add(lblAngebot_5);
 		Labels[5]=lblAngebot_5;
 		
 		JLabel lblAngebot_6 = new JLabel("A7");
-		GridBagConstraints gbc_lblAngebot_6 = new GridBagConstraints();
-		gbc_lblAngebot_6.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_6.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_6.gridx = 3;
-		gbc_lblAngebot_6.gridy = 3;
-		panel_offers.add(lblAngebot_6, gbc_lblAngebot_6);
+		lblAngebot_6.setBounds(212, 289, 95, 14);
+		panel_offers.add(lblAngebot_6);
 		Labels[6]=lblAngebot_6;
 		
 		JLabel lblAngebot_7 = new JLabel("A8");
-		GridBagConstraints gbc_lblAngebot_7 = new GridBagConstraints();
-		gbc_lblAngebot_7.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_7.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_7.gridx = 5;
-		gbc_lblAngebot_7.gridy = 3;
-		panel_offers.add(lblAngebot_7, gbc_lblAngebot_7);
+		lblAngebot_7.setBounds(342, 289, 95, 14);
+		panel_offers.add(lblAngebot_7);
 		Labels[7]=lblAngebot_7;
 		
 		JLabel lblAngebot_8 = new JLabel("A9");
-		GridBagConstraints gbc_lblAngebot_8 = new GridBagConstraints();
-		gbc_lblAngebot_8.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_8.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_8.gridx = 7;
-		gbc_lblAngebot_8.gridy = 3;
-		panel_offers.add(lblAngebot_8, gbc_lblAngebot_8);
+		lblAngebot_8.setBounds(472, 289, 95, 14);
+		panel_offers.add(lblAngebot_8);
 		Labels[8]=lblAngebot_8;
 		
 		JLabel lblAngebot_9 = new JLabel("A10");
-		GridBagConstraints gbc_lblAngebot_9 = new GridBagConstraints();
-		gbc_lblAngebot_9.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblAngebot_9.insets = new Insets(0, 0, 5, 5);
-		gbc_lblAngebot_9.gridx = 9;
-		gbc_lblAngebot_9.gridy = 3;
-		panel_offers.add(lblAngebot_9, gbc_lblAngebot_9);
+		lblAngebot_9.setBounds(602, 289, 95, 14);
+		panel_offers.add(lblAngebot_9);
 		Labels[9]=lblAngebot_9;
 		
 		JButton btnVorherige = new JButton("vorherige");
-		GridBagConstraints gbc_btnVorherige = new GridBagConstraints();
-		gbc_btnVorherige.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnVorherige.insets = new Insets(0, 0, 5, 5);
-		gbc_btnVorherige.gridx = 1;
-		gbc_btnVorherige.gridy = 5;
-		panel_offers.add(btnVorherige, gbc_btnVorherige);
-
-		JButton btnNchste = new JButton("n\u00E4chste");
-		btnNchste.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Seite++;
-				anzeigen(Seite);
-			}
-		});
-		GridBagConstraints gbc_btnNchste = new GridBagConstraints();
-		gbc_btnNchste.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNchste.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNchste.gridx = 9;
-		gbc_btnNchste.gridy = 5;
-		panel_offers.add(btnNchste, gbc_btnNchste);
+		btnVorherige.setBounds(212, 363, 95, 23);
+		panel_offers.add(btnVorherige);
+		
+				JButton btnNchste = new JButton("n\u00E4chste");
+				btnNchste.setBounds(472, 363, 95, 23);
+				btnNchste.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Seite++;
+						anzeigen(Seite);
+					}
+				});
+				panel_offers.add(btnNchste);
+				
+				JLabel lblPicture6 = new JLabel("Picture");
+				lblPicture6.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture6.setBackground(Color.LIGHT_GRAY);
+				lblPicture6.setBounds(82, 175, 95, 103);
+				panel_offers.add(lblPicture6);
+				
+				JLabel lblPicture7 = new JLabel("Picture");
+				lblPicture7.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture7.setBackground(Color.LIGHT_GRAY);
+				lblPicture7.setBounds(212, 175, 95, 103);
+				panel_offers.add(lblPicture7);
+				
+				JLabel lblPicture8 = new JLabel("Picture");
+				lblPicture8.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture8.setBackground(Color.LIGHT_GRAY);
+				lblPicture8.setBounds(342, 175, 95, 103);
+				panel_offers.add(lblPicture8);
+				
+				JLabel lblPicture9 = new JLabel("Picture");
+				lblPicture9.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture9.setBackground(Color.LIGHT_GRAY);
+				lblPicture9.setBounds(472, 175, 95, 103);
+				panel_offers.add(lblPicture9);
+				
+				JLabel lblPicture10 = new JLabel("Picture");
+				lblPicture10.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture10.setBackground(Color.LIGHT_GRAY);
+				lblPicture10.setBounds(602, 175, 95, 103);
+				panel_offers.add(lblPicture10);
+				
+				JLabel lblPicture2 = new JLabel("Picture");
+				lblPicture2.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture2.setBackground(Color.LIGHT_GRAY);
+				lblPicture2.setBounds(212, 46, 95, 103);
+				panel_offers.add(lblPicture2);
+				
+				JLabel lblPicture3 = new JLabel("Picture");
+				lblPicture3.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture3.setBackground(Color.LIGHT_GRAY);
+				lblPicture3.setBounds(342, 46, 95, 103);
+				panel_offers.add(lblPicture3);
+				
+				JLabel lblPicture4 = new JLabel("Picture");
+				lblPicture4.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture4.setBackground(Color.LIGHT_GRAY);
+				lblPicture4.setBounds(472, 46, 95, 103);
+				panel_offers.add(lblPicture4);
+				
+				JLabel lblPicture5 = new JLabel("Picture");
+				lblPicture5.setHorizontalAlignment(SwingConstants.CENTER);
+				lblPicture5.setBackground(Color.LIGHT_GRAY);
+				lblPicture5.setBounds(602, 46, 95, 103);
+				panel_offers.add(lblPicture5);
+				
+				JLabel lblUserBackground = new JLabel("jlabel");
+				lblUserBackground.setBounds(0, 0, 784, 457);
+				panel_offers.add(lblUserBackground);
 		anzeigen(0);
 		
 		/*TAB ANGEBOT EINTRAGEN*/
