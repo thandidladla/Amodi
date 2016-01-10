@@ -1,5 +1,7 @@
 package com.amodi.data;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -9,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultEditorKit.CopyAction;
 
 public class AmodiDialog {
@@ -297,6 +301,17 @@ public class AmodiDialog {
 			}
 
 		} while (i == JOptionPane.OK_OPTION && !b);
+		return null;
+	}
+	
+	public File[] showPictureChooser(JRootPane owner){
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Bilder", "gif","png","jpg");
+		JFileChooser chooser = new JFileChooser("Choose pictures...");
+		chooser.setMultiSelectionEnabled(true);
+		chooser.setFileFilter(filter);
+		if(chooser.showOpenDialog(owner)==JFileChooser.APPROVE_OPTION){
+			return chooser.getSelectedFiles();
+		}
 		return null;
 	}
 }

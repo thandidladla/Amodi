@@ -1,12 +1,17 @@
 package com.amodi.data;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import java.sql.ResultSetMetaData;
 
@@ -14,6 +19,7 @@ public class Controller {
 	private Connection connect = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
+	private FTPClient ftp_client;
 	private String url, username, password;
 	boolean connected;
 
@@ -32,6 +38,8 @@ public class Controller {
 			USER = getRelation("User");
 			ARTIKEL = getRelation("Artikel");
 			ANGEBOT = getRelation("Angebot");
+			
+			ftp_client = new FTPClient();
 		}else{
 			GESCHAEFT = null;
 			USER = null;
@@ -261,6 +269,8 @@ public class Controller {
 					"pzLF3mtPK6");
 			statement = connect.createStatement();
 			JOptionPane.showMessageDialog(null, "Connection established!", "Information", JOptionPane.INFORMATION_MESSAGE);
+			ftp_client.connect("ftp.amodi.netau.net");
+			ftp_client.login("a9691386", "amodifashion");
 			connected = true;
 			return true;
 		} catch (Exception e) {
@@ -275,8 +285,9 @@ public class Controller {
 		if(isConnected()){
 			try {
 				connect.close();
+				ftp_client.logout();
 				return true;
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
@@ -341,5 +352,29 @@ public class Controller {
 			return null;
 		}
 		
+	}
+	
+	public boolean createPictureLocation(JRootPane owner,Integer artikelID){
+		String ending = artikelID.toString();
+		try{
+			 ftp_client.makeDirectory("/"+ending);
+			 return true;
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(owner, "An Error has occured.","Error",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
+	
+	public boolean uploadPicture(JRootPane owner,File file,Integer artikelID){
+		String location = artikelID.toString();
+		try{
+			FileInputStream fis = new FileInputStream(file);
+			ftp_client.changeWorkingDirectory("/"+location);
+			ftp_client.storeFile(file.getAbsolutePath(), fis);
+			return true;
+		}catch(IOException e){
+			JOptionPane.showMessageDialog(owner, "An Error has occured.","Error",JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 	}
 }
