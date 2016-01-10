@@ -303,7 +303,6 @@ public class AdminGUI extends JFrame {
 				public void tableChanged(TableModelEvent e) {
 					int index = tabbedPane.getSelectedIndex();
 					if (ad.checkValues(getRow(tables[index], e.getFirstRow()), RELATIONS[index][0])) {
-						System.out.println("true");
 						ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
 								tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
 					} else {
@@ -337,6 +336,23 @@ public class AdminGUI extends JFrame {
 		String[] relation = (String[]) RELATIONS[index];
 		tables[index].setModel(
 				new DefaultTableModel(ctrl.loadData(relation), Arrays.copyOfRange(relation, 1, relation.length)));
+		tables[index].getModel().addTableModelListener(new TableModelListener() {
+			
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				int index = tabbedPane.getSelectedIndex();
+				if (ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[index][0])) {
+					System.out.println("true");
+					ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
+							tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
+				} else {
+					JOptionPane.showMessageDialog(tables[index].getRootPane(), "Invalid value!.");
+					refreshTable(0);
+					repaint();
+				}
+				
+			}
+		});
 		tables[index].repaint();
 	}
 
@@ -394,7 +410,6 @@ public class AdminGUI extends JFrame {
 			Object[] row = new Object[table.getColumnCount()];
 			for (int i = 0; i < table.getColumnCount(); i++) {
 				row[i] = table.getValueAt(index, i);
-				System.out.println(row[i]);
 			}
 			return row;
 		} else {

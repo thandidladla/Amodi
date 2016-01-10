@@ -148,7 +148,7 @@ public class AmodiDialog {
 	public boolean checkValues(Object[] values, String relation) {
 		switch (relation) {
 		case "Artikel":
-			boolean geschlecht = values[1] == "männlich" || values[1] == "weiblich" || values[1] == "unisex";
+			boolean geschlecht = values[1].equals("männlich") || values[1].equals("weiblich") || values[1].equals("unisex");
 			boolean farbe = !((String) values[3]).matches("^\\s*$") && !((String) values[3]).matches(".*\\d.*");
 			boolean tags = !((String) values[4]).matches("^\\s*$");
 			boolean stil = !((String) values[5]).matches("^\\s*$") && !((String) values[5]).matches(".*\\d.*");
