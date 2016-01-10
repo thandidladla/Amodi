@@ -143,11 +143,12 @@ public class AdminGUI extends JFrame {
 		// HIGHEST PANES-----------------------------------------------
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-		contentPane.add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.setBounds(5, 5, 872, 439);
+		contentPane.add(tabbedPane);
 
 		// TABS-------------------------------------------------------
 		// ARTIKEL
@@ -157,7 +158,7 @@ public class AdminGUI extends JFrame {
 		panelArtikel.setLayout(null);
 
 		JScrollPane scrollPaneArtikel = new JScrollPane();
-		scrollPaneArtikel.setBounds(10, 11, 743, 427);
+		scrollPaneArtikel.setBounds(10, 11, 743, 412);
 		scrollPaneArtikel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelArtikel.add(scrollPaneArtikel);
 
@@ -187,6 +188,11 @@ public class AdminGUI extends JFrame {
 			}
 		});
 		scrollPaneArtikel.setViewportView(tblArtikel);
+		
+		JLabel lblLabel = new JLabel("");
+		lblLabel.setBounds(0, 0, 763, 438);
+		lblLabel.setIcon(new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/TabContent.png")));
+		panelArtikel.add(lblLabel);
 
 		// ANGEBOT
 		JPanel panelAngebot = new JPanel();
@@ -195,7 +201,7 @@ public class AdminGUI extends JFrame {
 		panelAngebot.setLayout(null);
 
 		JScrollPane scrollPaneAngebot = new JScrollPane();
-		scrollPaneAngebot.setBounds(10, 5, 694, 427);
+		scrollPaneAngebot.setBounds(10, 11, 743, 412);
 		scrollPaneAngebot.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelAngebot.add(scrollPaneAngebot);
 
@@ -222,6 +228,11 @@ public class AdminGUI extends JFrame {
 		});
 
 		scrollPaneAngebot.setViewportView(tblAngebot);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/TabContent.png")));
+		lblNewLabel.setBounds(0, 0, 763, 434);
+		panelAngebot.add(lblNewLabel);
 
 		// GESCHAEFT
 		JPanel panelGeschaeft = new JPanel();
@@ -230,7 +241,7 @@ public class AdminGUI extends JFrame {
 		panelGeschaeft.setLayout(null);
 
 		JScrollPane scrollPaneGeschaeft = new JScrollPane();
-		scrollPaneGeschaeft.setBounds(10, 5, 579, 431);
+		scrollPaneGeschaeft.setBounds(10, 11, 743, 412);
 		scrollPaneGeschaeft.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelGeschaeft.add(scrollPaneGeschaeft);
 
@@ -255,6 +266,11 @@ public class AdminGUI extends JFrame {
 			}
 		});
 		scrollPaneGeschaeft.setViewportView(tblGeschaeft);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setBounds(0, 0, 763, 434);
+		panelGeschaeft.add(lblNewLabel_1);
+		lblNewLabel_1.setIcon(new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/TabContent.png")));
 
 		// USER
 		JPanel panelUser = new JPanel();
@@ -263,7 +279,7 @@ public class AdminGUI extends JFrame {
 		panelUser.setLayout(null);
 
 		JScrollPane scrollPaneUser = new JScrollPane();
-		scrollPaneUser.setBounds(10, 5, 579, 431);
+		scrollPaneUser.setBounds(10, 11, 743, 412);
 		scrollPaneUser.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		panelUser.add(scrollPaneUser);
 
@@ -288,6 +304,16 @@ public class AdminGUI extends JFrame {
 			}
 		});
 		scrollPaneUser.setViewportView(tblUser);
+		
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/TabContent.png")));
+		lblNewLabel_2.setBounds(0, 0, 763, 434);
+		panelUser.add(lblNewLabel_2);
+		
+		JLabel lblBackground = new JLabel("");
+		lblBackground.setIcon(new ImageIcon(AdminGUI.class.getResource("/com/amodi/res/GUIBackground.png")));
+		lblBackground.setBounds(0, 0, 882, 449);
+		contentPane.add(lblBackground);
 
 	}
 
