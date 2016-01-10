@@ -18,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.plaf.IconUIResource;
@@ -70,6 +72,7 @@ public class AdminGUI extends JFrame {
 
 		this.ad = new AmodiDialog();
 		setTitle("Amodi Admin");
+		setLocationRelativeTo(null);
 		WindowAdapter exitListener = new WindowAdapter() {
 
 			@Override
@@ -111,6 +114,17 @@ public class AdminGUI extends JFrame {
 
 		JMenuItem mntmRemove = new JMenuItem("Remove");
 		mnTools.add(mntmRemove);
+		
+		JMenuItem mntmClose = new JMenuItem("Close");
+		mntmClose.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.remove(tabbedPane.getSelectedIndex());
+			}
+		});
+		mntmClose.setEnabled(false);
+		mnTools.add(mntmClose);
 
 		JMenu mnServer = new JMenu("Server");
 		menuBar.add(mnServer);
@@ -163,6 +177,18 @@ public class AdminGUI extends JFrame {
 		setContentPane(contentPane);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if(tabbedPane.getSelectedIndex() > 3){
+					mntmClose.setEnabled(true);
+				}else{
+					mntmClose.setEnabled(false);
+				}
+				
+			}
+		});
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		// TABS-------------------------------------------------------
@@ -189,19 +215,7 @@ public class AdminGUI extends JFrame {
 				}
 			}
 		});
-		tblArtikel.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				if (ad.checkValues(getRow(tblArtikel, e.getFirstRow()), RELATIONS[0][0])) {
-					ctrl.edit(tblArtikel.getValueAt(e.getLastRow(), 0),
-							tblArtikel.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ARTIKEL);
-				} else {
-					JOptionPane.showMessageDialog(tblArtikel.getRootPane(), "Invalid value!.");
-					refreshTable(0);
-				}
-			}
-		});
+		
 		scrollPaneArtikel.setViewportView(tblArtikel);
 
 		// ANGEBOT
@@ -227,16 +241,8 @@ public class AdminGUI extends JFrame {
 				}
 			}
 		});
-		tblAngebot.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-
-				ctrl.edit(tblAngebot.getValueAt(e.getLastRow(), 0),
-						tblAngebot.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.ANGEBOT);
-			}
-		});
-
+		
+	
 		scrollPaneAngebot.setViewportView(tblAngebot);
 
 		// GESCHAEFT
@@ -260,14 +266,6 @@ public class AdminGUI extends JFrame {
 				} else {
 					return true;
 				}
-			}
-		});
-		tblGeschaeft.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				ctrl.edit(tblGeschaeft.getValueAt(e.getLastRow(), 0),
-						tblGeschaeft.getValueAt(e.getLastRow(), e.getColumn()), e.getColumn(), ctrl.GESCHAEFT);
 			}
 		});
 		scrollPaneGeschaeft.setViewportView(tblGeschaeft);
@@ -295,16 +293,28 @@ public class AdminGUI extends JFrame {
 						}
 					}
 				});
-		tblUser.getModel().addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent e) {
-				ctrl.edit(tblUser.getValueAt(e.getLastRow(), 0), tblUser.getValueAt(e.getLastRow(), e.getColumn()),
-						e.getColumn(), ctrl.USER);
-			}
-		});
+		
 		scrollPaneUser.setViewportView(tblUser);
-
+		
+		for(int i = 0;i < 4;i++){
+			tables[i].getModel().addTableModelListener(new TableModelListener() {
+				
+				@Override
+				public void tableChanged(TableModelEvent e) {
+					int index = tabbedPane.getSelectedIndex();
+					if (ad.checkValues(getRow(tables[index], e.getFirstRow()), RELATIONS[index][0])) {
+						System.out.println("true");
+						ctrl.edit(tables[index].getValueAt(e.getFirstRow(), 0),
+								tables[index].getValueAt(e.getFirstRow(), e.getColumn()), e.getColumn(), RELATIONS[index]);
+					} else {
+						JOptionPane.showMessageDialog(tables[index].getRootPane(), "Invalid value!.");
+						refreshTable(0);
+						repaint();
+					}
+					
+				}
+			});
+		}
 	}
 
 	private void setDefaultCloseOperation(WindowListener windowListener) {
@@ -384,6 +394,7 @@ public class AdminGUI extends JFrame {
 			Object[] row = new Object[table.getColumnCount()];
 			for (int i = 0; i < table.getColumnCount(); i++) {
 				row[i] = table.getValueAt(index, i);
+				System.out.println(row[i]);
 			}
 			return row;
 		} else {
